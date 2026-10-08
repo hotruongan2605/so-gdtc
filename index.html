@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#16834b">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>Sổ GDTC – V2.1</title>
+<style>
+:root{--bg:#f3f5f7;--card:#fff;--ink:#15202b;--muted:#66727d;--line:#d9e0e7;--pri:#16834b;--T:#16834b;--H:#2563eb;--C:#f97316;--V:#6b7280;--danger:#dc2626;--shadow:0 1px 4px rgba(0,0,0,.10)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0}body{background:var(--bg);color:var(--ink);font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:76px}
+header{position:sticky;top:0;z-index:30;background:var(--pri);color:#fff;padding:10px 12px;padding-top:calc(10px + env(safe-area-inset-top));box-shadow:0 2px 8px rgba(0,0,0,.16)}.headrow{display:flex;gap:8px;align-items:center}.headrow h1{font-size:18px;margin:0;flex:1}.iconbtn{height:40px;min-width:40px;border:0;border-radius:10px;background:rgba(255,255,255,.18);color:#fff;font-size:18px}
+main{max-width:760px;margin:auto;padding:10px 12px}.card{background:var(--card);border-radius:13px;padding:12px;margin:8px 0;box-shadow:var(--shadow)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.small{font-size:13px}.muted{color:var(--muted)}
+label.small{display:block;margin-bottom:4px}input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:10px;padding:10px;min-height:44px}textarea{resize:vertical}
+.btn{min-height:42px;border:1.5px solid var(--line);border-radius:10px;background:var(--card);color:var(--ink);padding:8px 11px;font:inherit;font-weight:650}.btn.pri{background:var(--pri);border-color:var(--pri);color:#fff}.btn.danger{color:var(--danger);border-color:var(--danger)}.btn.sm{min-height:36px;padding:5px 9px;font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.stat{background:var(--card);border-radius:10px;padding:8px;text-align:center;box-shadow:var(--shadow);font-size:12px}.stat b{display:block;font-size:19px;margin-top:2px}.stat.T b{color:var(--T)}.stat.H b{color:var(--H)}.stat.C b{color:var(--C)}
+.toolbar{position:sticky;top:60px;z-index:20;background:var(--bg);padding:6px 0}.student{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;background:var(--card);border-radius:12px;padding:7px 8px 7px 10px;margin:6px 0;box-shadow:var(--shadow);border-left:5px solid var(--line)}.student.T{border-left-color:var(--T)}.student.H{border-left-color:var(--H)}.student.C{border-left-color:var(--C)}.name{font-weight:700;word-break:break-word}.subline{font-size:12px;color:var(--muted);margin-top:2px}.levels{display:flex;gap:5px}.lv{width:43px;height:43px;border-radius:9px;border:2px solid var(--line);background:var(--card);font-weight:850;font-size:17px}.lv.T{color:var(--T)}.lv.H{color:var(--H)}.lv.C{color:var(--C)}.lv.on.T{background:var(--T);color:#fff;border-color:var(--T)}.lv.on.H{background:var(--H);color:#fff;border-color:var(--H)}.lv.on.C{background:var(--C);color:#fff;border-color:var(--C)}
+.actions{display:flex;gap:6px;flex-wrap:wrap}.filter{display:flex;gap:6px;overflow:auto;padding:2px 0}.filter button{white-space:nowrap}.filter .on{background:var(--pri);border-color:var(--pri);color:#fff}.notice{padding:9px 10px;background:#ecfdf3;border:1px solid #bbf7d0;color:#166534;border-radius:10px;font-size:13px}
+#detail{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.45);display:none}.sheet{position:absolute;left:0;right:0;bottom:0;max-width:760px;margin:auto;background:var(--card);border-radius:18px 18px 0 0;padding:14px 14px calc(16px + env(safe-area-inset-bottom));max-height:86vh;overflow:auto}.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.chip{border:1.5px solid var(--line);border-radius:20px;background:var(--card);color:var(--ink);padding:7px 11px;font:inherit;font-weight:650;cursor:pointer}.chip.on{background:var(--pri);border-color:var(--pri);color:#fff}.sheethead{display:flex;gap:8px;align-items:flex-start}.sheethead>div{flex:1}.comment-title{font-size:14px;font-weight:800;margin-top:14px}.comment-help{font-size:12px;color:var(--muted);margin:2px 0 6px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}nav button{flex:1;border:0;background:none;color:var(--muted);padding:8px 2px;font-size:11px;font-weight:700}nav button span{display:block;font-size:21px;line-height:1.05}nav button.on{color:var(--pri)}
+.page{display:none}.page.on{display:block}.empty{padding:22px;text-align:center;color:var(--muted)}
+@media(max-width:430px){main{padding:8px}.grid2{grid-template-columns:1fr}.levels{gap:3px}.lv{width:39px;height:42px}.student{padding-left:8px}.stats{gap:5px}.stat{padding:7px 3px}}
+
+/* ===== V2.0 responsive workspace ===== */
+.progress-card{padding:10px 12px}.progress-head,.progress-meta{display:flex;justify-content:space-between;gap:10px;align-items:center}.progress-head{font-size:14px}.progress-head span,.progress-meta{color:var(--muted);font-size:12px}.progress-track{height:9px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0 6px}.progress-bar{height:100%;width:0;background:var(--pri);border-radius:99px;transition:width .18s ease}.progress-meta{font-size:12px}.quick-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.quick-actions .btn{width:100%}.studentListWrap{min-width:0}.student-list-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 0 8px}.student-list-head b{font-size:15px}.desktop-only{display:none}
+@media (min-width: 900px){
+ body{padding-bottom:20px}header{padding-left:22px;padding-right:22px}.headrow{max-width:1180px;margin:auto}.headrow h1{font-size:20px}
+ main{max-width:1180px;padding:16px 20px}.pageQuickGrid{}
+ #pageQuick{display:grid;grid-template-columns:minmax(300px,340px) minmax(0,1fr);grid-template-rows:auto auto auto auto;column-gap:16px;align-items:start}
+ #pageQuick>.toolbar{grid-column:1;grid-row:1 / span 2;position:sticky;top:8px;padding:0;background:transparent}
+ #pageQuick>.card:nth-of-type(1){grid-column:1;grid-row:3}
+ #pageQuick>.stats{grid-column:1;grid-row:4;grid-template-columns:repeat(2,1fr)}
+ #pageQuick>.progress-card{grid-column:1;grid-row:5}
+ #pageQuick>.card:nth-of-type(3){grid-column:1;grid-row:6}
+ #pageQuick>#studentList{grid-column:2;grid-row:1 / span 6;min-width:0}
+ .student-list-head{position:sticky;top:8px;z-index:5;background:var(--bg);padding:2px 0 8px}
+ .student{grid-template-columns:minmax(0,1fr) auto;padding:9px 12px}.lv{width:48px;height:46px}
+ nav{position:sticky;bottom:0;max-width:720px;margin:10px auto 0;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+ .desktop-only{display:block}.grid2{gap:10px}.grid3{gap:10px}.card{padding:14px}
+ #pageClasses,#pageReport,#pageData{max-width:1080px;margin:auto}
+ #pageReport .card:nth-of-type(2){max-height:60vh;overflow:auto}
+}
+@media (max-width: 899px){
+ .quick-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-actions .btn{min-height:44px}
+ .progress-card{margin-top:8px}
+ #studentList{padding-bottom:8px}
+}
+@media (max-width: 430px){
+ .headrow h1{font-size:16px}.iconbtn{height:42px;min-width:42px}.toolbar{top:57px}.student{grid-template-columns:minmax(0,1fr) auto}.name{font-size:15px}.subline{font-size:11px}.lv{width:41px;height:44px}.filter button{min-height:40px}.progress-head{font-size:13px}
+}
+@media (prefers-reduced-motion: reduce){.progress-bar{transition:none}}
+
+</style>
+</head>
+<body>
+<header><div class="headrow"><h1>🏃 Sổ GDTC · V2.1</h1><button class="iconbtn" id="backupBtn" title="Sao lưu">💾</button><button class="iconbtn" id="themeBtn" title="Giao diện">🌓</button><span id="saveStatus" class="small" style="opacity:.9;white-space:nowrap">Đã lưu</span></div></header>
+<main>
+<section id="pageQuick" class="page on">
+ <div class="toolbar">
+  <div class="grid2"><label class="small muted">Lớp<select id="classSel"></select></label><label class="small muted">Ngày<input id="dateSel" type="date"></label></div>
+  <div class="grid2"><label class="small muted">Tiết<select id="periodSel"><option value="">—</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label><label class="small muted">Chủ đề<select id="topicSel"><option value="">— Chọn chủ đề —</option></select></label></div>
+  <div class="grid2"><label class="small muted">Bài / nội dung<select id="lessonSel"><option value="">— Chọn bài —</option></select></label><label class="small muted">Nội dung cụ thể<select id="contentSel"><option value="">— Chọn nội dung —</option></select></label></div>
+  <div class="small muted" id="lessonHint" style="margin-top:5px">Chọn theo thứ tự: Chủ đề → Bài → Nội dung cụ thể. “Thể thao tự chọn” trong SGK mẫu chỉ được nêu ở phần cấu trúc, không có bài chi tiết; nhập môn/nội dung thực tế ở ô dưới nếu cần.</div>
+  <input id="lesson" placeholder="Nội dung khác (nếu cần)" autocomplete="off">
+  <input id="search" placeholder="🔎 Tìm học sinh…" autocomplete="off">
+ </div>
+ <div class="card quick-action-card"><div class="quick-actions"><button class="btn pri" id="allH">✓ Chấm cả lớp H</button><button class="btn" id="allT">T Cả lớp</button><button class="btn" id="allC">C Cả lớp</button><button class="btn" id="clearAll">↺ Bỏ chấm</button></div><div style="height:6px"></div><div class="filter" id="filters"><button class="btn sm on" data-filter="all">Tất cả</button><button class="btn sm" data-filter="unrated">Chưa chấm</button><button class="btn sm" data-filter="rated">Đã chấm</button><button class="btn sm" data-filter="commented">Có nhận xét</button></div></div>
+ <div class="stats"><div class="stat"><span>Đã chấm</span><b id="nRated">0</b></div><div class="stat T"><span>T</span><b id="nT">0</b></div><div class="stat H"><span>H</span><b id="nH">0</b></div><div class="stat C"><span>C</span><b id="nC">0</b></div></div>
+ <div class="card progress-card"><div class="progress-head"><b>Tiến độ lớp</b><span id="progressText">0/0 · 0%</span></div><div class="progress-track"><div id="progressBar" class="progress-bar"></div></div><div class="progress-meta"><span id="progressRemaining">0 học sinh chưa chấm</span><span id="progressRatedLabel">0 đã chấm</span></div></div>
+ <div class="card"><div class="small muted">Mẹo: chạm T/H/C trực tiếp. Chạm tên để thêm nhận xét nhanh. Bật “Tự chuyển” để sau mỗi lần chấm app nhảy đến em chưa chấm tiếp theo. Trên điện thoại, ưu tiên thao tác một tay; trên máy tính, danh sách sẽ mở rộng để nhìn nhiều học sinh hơn.</div><label style="display:flex;gap:8px;align-items:center;margin-top:8px"><input id="autoNext" type="checkbox" style="width:20px;min-height:20px"> <span>Tự chuyển đến học sinh chưa chấm</span></label></div>
+ <div id="studentList"></div>
+</section>
+<section id="pageClasses" class="page">
+ <div class="card"><h2 style="margin:0 0 8px">🏫 Quản lý lớp & học sinh</h2>
+  <div class="small muted" style="margin-bottom:8px">14 lớp có sẵn được giữ nguyên. Có thể thêm lớp riêng, dán danh sách học sinh và cập nhật lại danh sách khi cần.</div>
+  <div class="grid2"><label class="small muted">Tên lớp mới<input id="newClassName" placeholder="Ví dụ: 3/1"></label><label class="small muted">Danh sách học sinh<textarea id="newClassStudents" rows="4" placeholder="Dán mỗi học sinh một dòng"></textarea></label></div>
+  <div class="actions"><button class="btn pri" id="addClass">＋ Thêm lớp</button><button class="btn" id="clearClassForm">Xóa ô nhập</button></div>
+ </div>
+ <div class="card"><h3 style="margin:0 0 8px">Chỉnh sửa lớp đang chọn</h3>
+  <label class="small muted">Chọn lớp<select id="manageClassSel"></select></label>
+  <label class="small muted" style="display:block;margin-top:8px">Danh sách học sinh<textarea id="manageStudents" rows="10" placeholder="Mỗi học sinh một dòng"></textarea></label>
+  <div class="actions"><button class="btn pri" id="saveRoster">💾 Lưu danh sách</button><button class="btn danger" id="deleteCustomClass">🗑 Xóa lớp tùy chỉnh</button></div>
+  <div class="small muted" id="classManageHint" style="margin-top:7px"></div>
+ </div>
+ <div class="card"><h3 style="margin:0 0 8px">Danh sách lớp</h3><div id="classCards"></div></div>
+</section>
+<section id="pageReport" class="page">
+ <div class="card"><h2 style="margin:0 0 8px">📊 Báo cáo & lịch sử</h2>
+  <div class="grid2"><label class="small muted">Lớp<select id="reportClassSel"></select></label><label class="small muted">Từ ngày<input id="reportFrom" type="date"></label></div>
+  <div class="grid2"><label class="small muted">Đến ngày<input id="reportTo" type="date"></label><label class="small muted">Học sinh<select id="reportStudentSel"><option value="">Tất cả học sinh</option></select></label></div>
+  <div class="actions" style="margin-top:8px"><button class="btn pri" id="refreshReport">↻ Cập nhật</button><button class="btn" id="exportReport">📊 Xuất Excel</button></div>
+ </div>
+ <div class="stats"><div class="stat"><span>Lượt đánh giá</span><b id="rRated">0</b></div><div class="stat T"><span>T</span><b id="rT">0</b></div><div class="stat H"><span>H</span><b id="rH">0</b></div><div class="stat C"><span>C</span><b id="rC">0</b></div></div>
+ <div class="card"><div class="small muted" id="reportSummary">Chưa có dữ liệu trong khoảng thời gian đã chọn.</div></div>
+ <div class="card" style="overflow:auto"><table id="reportTable" style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Ngày</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Lớp</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">HS</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Tiết</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Nội dung</th><th style="padding:7px;border-bottom:1px solid var(--line)">Mức</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Nhận xét</th></tr></thead><tbody></tbody></table></div>
+</section>
+<section id="pageData" class="page"><div class="card"><h2 style="margin:0 0 8px">💾 Dữ liệu</h2><p class="small muted">Dữ liệu đánh giá được lưu trên trình duyệt của thiết bị này. Nên sao lưu định kỳ.</p><div class="grid2"><button class="btn pri" id="backup2">💾 Sao lưu JSON</button><button class="btn" id="exportCurrent">📊 Xuất Excel</button><label class="btn">📥 Khôi phục JSON<input id="restore" type="file" accept="application/json,.json" style="display:none"></label></div><button class="btn danger" id="reset" style="width:100%;margin-top:8px">Xóa toàn bộ dữ liệu đánh giá</button></div><div class="card"><b>📱 Dùng trên điện thoại & máy tính</b><p class="small muted">Bản này hoạt động offline và dữ liệu nằm trên từng thiết bị. Hãy sao lưu JSON thường xuyên. Khi triển khai thành website HTTPS, có thể cài như ứng dụng PWA và dùng offline.</p></div><div class="card"><b>14 lớp đang quản lý</b><p class="small muted" id="storageStatus" style="margin:6px 0 0">Dữ liệu đang lưu trên thiết bị này.</p><p class="small muted">5/1–5/6 · 4/1–4/6 · 1/1 · 1/4. Danh sách học sinh được nạp từ nguồn dữ liệu hiện có của dự án.</p></div></section>
+</main>
+<nav><button type="button" class="on" data-page="quick"><span>✏️</span>Ghi nhanh</button><button type="button" data-page="classes"><span>🏫</span>Lớp</button><button type="button" data-page="report"><span>📊</span>Báo cáo</button><button type="button" data-page="data"><span>💾</span>Dữ liệu</button></nav>
+<div id="detail"><div class="sheet"><div id="sheetContent"></div></div></div>
+<script>
+'use strict';
+// Sổ GDTC V2.0 — tối ưu giao diện responsive; giữ nguyên dữ liệu và luồng nghiệp vụ V1.9.
+const PRELOAD={"4/1":["Mai Khánh An","Hồ Kim Bảo","Huỳnh Đức Duy","Lê Thuỵ Ngọc Duyên","Lê Gia Hân","Nguyễn Hiền Hòa","Nguyễn Thế Hùng","Trần Ngọc Lam","Lương Sơn Hoàng Lan","Nguyễn Khánh Linh","Lê Hoàng Long","Nguyễn Tuệ Minh","Trần Anh Minh","Trần Ngọc Thảo My","Mai Thị Mỹ Ngân","Quách Ngọc Mỹ Nghi","Lê Bảo Ngọc","Trần Kim Ngọc","Võ Ngọc Nhi","Lê Khánh Như","Nguyễn Tấn Phát","Nguyễn Thiên Phúc","Võ Minh Quân","Lê Quang Thành","Lê Thị Kim Thư","Nguyễn Vũ Thanh Trúc","Lê Văn Tú","Võ Nguyễn Thái Tú","Ngô Tường Vy","Nguyễn Trần Phương Vy","Nguyễn Thị Thanh Xuân"],"4/2":["Đoàn Phúc An","Lương Ngọc Khánh An","Lê Nhật Anh","Trương Nam Anh","Ngô Thiên Ân","Nguyễn Gia Bảo","Lê Ngọc Bảo Châu","Lương Lê Bảo Châu","Võ Ngọc Kim Dung","Lê Hoài Dư","Lê Thị Ánh Dương","Trần Thùy Dương","Lê Quang Đại","Hà Minh Đan","Lê Thị Ngọc Đăng","Nguyễn Kim Hoài","Lương Lê Bảo Khang","Bùi Nguyễn Minh Khôi","Phạm Nguyễn Khánh Linh","Nguyễn Khánh Luân","Bạch Ngọc Mai","Vũ Minh Ngọc","Chung Thiện Nhân","Lâm Thiên Phú","Nguyễn Văn Quang","Hà Phương Thảo","Thái Hưng Thịnh","Châu Phương Thuỳ","Nguyễn Thị Phương Vy","Lại Bảo Yến"],"4/3":["Đặng Kim Anh x","Trần Thị Trâm Anh x","Đặng Trần Duy Anh","Phạm Nguyễn Gia Bảo","Nguyễn An Bình","Lê Thanh Bảo Châu x","Trần Lê Ánh Duyên x","Hán Linh Đan x","Nguyễn Nhật Minh Đăng","Danh Thị Mỹ Hạnh x","Vũ Thị Thanh Hằng x","Phan Huy Hoàng","Nguyễn Huỳnh Xuân Hùng","Đinh Nhật Huy","Lương Gia Hưng","Kiều Minh Khang","Võ Ngọc Tuệ Khánh x","Đặng Quang Khôi","Chung Mỹ Kim x","Phạm Phương Lan x","Cao Thái Diệu Linh x","Nguyễn Phúc Lợi","Nguyễn Thị Yến Mi x","Lê Nhật Minh","Nguyễn Hồng Bảo Ngân x","Nguyễn Bảo Ngọc x","Ninh Hoàng Khánh Nhi x","Trần Quốc Thắng","Nguyễn Gia Huy","Nguyễn Thanh Nhàn x"],"4/4":["Phạm Bảo Anh Nữ","Chu Tuệ Anh Nữ","Nguyễn Phúc Thiên Ân Nam","Trần Duy Bảo Nam","Nguyễn Thành Đức Nam","Mã Kiều Nhã Hân Nữ","Lê Ngọc Hân Nữ","Trần Ngọc Hiền Nữ","Lê Thanh Hiền Nữ","Đinh Nho Hoàng Nam","Phạm Văn Khang Nam","Trương Phạm Anh Khôi Nam","Nguyễn Thị Ngọc Lan Nữ","Mai Ngọc My Nữ","Nguyễn Thị Ngọc Mỹ Nữ","Phạm Bảo Ngọc Nữ","Lê Bình Nguyên Nam","Đỗ Quỳnh Nhi Nữ","Nguyễn Hoàng Phúc Nam","Lê Nguyễn Hoà Tâm Nam","Liêu Chí Thành Nam","Nguyễn Quốc Thắng Nam","Lê Minh Thoại Nam","Đống Hoàng Minh Thư Nữ","Huỳnh Thủy Tiên Nữ","Ngô Trung Tín Nam","Đỗ Viết Tú Nam","Lê Đặng Tường Vy Nữ","Nguyễn Hà Vy Nữ","Trần Như Ý Nữ"],"4/5":["Phạm Bùi Quỳnh Anh","Dương Gia Bảo","Nguyễn Gia Bảo","Lại Ngọc Duyên","Lê Thành Đạt","Nguyễn Minh Đức","Nguyễn Gia Hân","Vũ Lưu Gia Hân","Lại Gia Huy","Nguyễn Gia Huy","Phạm Gia Hưng","Nguyễn Trung Kiên","Vòng Trấn Ngọc Liên","Nguyễn Hạ Mơ","Nguyễn Hào Nam","Phạm Ngọc Nga","Trần Thị Thiên Nga","Lê Thị Kim Ngân","Phạm Kim Ngân","Trịnh Ngọc Trúc Ngân","Lâm Minh Nhật","Đặng Thiên Phúc","Cổ Thị Ánh Phượng","Nguyễn Ngọc Như Quỳnh","Cao Đức Xuân Thành","Đoàn Thanh Thư","Nguyễn Anh Thư","Thành Nguyễn Diễm Thư","Đồng Bích Trăm","Nguyễn Hà Huy Trường","Nguyễn Minh Tú"],"4/6":["Nguyễn Ngọc Bảo An x","Nguyễn Tuấn Anh","Hồ Nhật Bảo","Đỗ Trần Quang Hân","Võ Nguyễn Ngọc Hân x","Nguyễn Hữu Minh Hoàng","Hồ Gia Khang","Dương Đăng Khoa","Nguyễn Nguyên Khôi","Nguyễn Tuấn Kiệt","Phạm Tuấn Kiệt","Phạm Tường Lam x","Nguyễn Thị Phương Lan x","Đỗ Trần Khánh Linh x","Đỗ Vũ Diệu Linh x","Bùi Thanh Tấn Lộc","Nguyễn Cát Tuệ Mẫn x","Thạch Trường Gia Nguyễn","Lương Trọng Nhân","Viên Gia Phát","Nguyễn Thiên Phúc","Vi Hoàng Phúc","Phạm Như Quỳnh x","Trần Diễm Quỳnh x","Trần Nguyễn Như Quỳnh x","Nguyễn Thị Ngọc Thảo x","Đặng Anh Thư x","Nguyễn Ngọc Anh Thư x","Nguyễn Thị Ánh Trâm x","Nguyễn Thị Thanh Trúc x","Trần Thảo Vy x"],"5/1":["Nguyễn Ngô Khánh An","Huỳnh Thị Mỹ An","Nguyễn Huỳnh Anh","Lê Gia Bảo","Cao Nguyễn Thảo Chi","Trần Kim Cương","Nguyễn Hoàng Dung","Hoàng Duy Dũng","Võ Thị Thảo Duyên","Nguyễn Đức Dương","Phan Mỹ Hạnh","Phạm Thị Kim Hằng","Lý Ngọc Hân","Tạ Thị Gia Hân","NguyễnTrung Hiếu","Nguyễn Hoàng Quốc Khánh","Phạm Đăng Khoa","Trần Đăng Khôi","Trần Gia Lâm","Nguyễn Dương Thanh Long","Nguyễn Tấn Lộc","Danh Thị Ngọc Mỹ","Nguyễn Thị Ly Na","Huỳnh Thanh Ngà","Nguyễn Bảo Nguyên","Phạm Hoàng Nguyên","Đào Hoàng Nhân","Nguyễn Thành Nhân","Nguyễn Thái Hạo Phong","Trần Lương Ngọc Phú","Dương Thanh Tâm","Nguyễn Nhật Thành","Nguyễn Ngọc Nhật Thiên","Võ Nguyễn Thái Tuấn","Nguyễn Ngọc Tường Vy"],"5/2":["Nguyễn Quốc Đại","Hà Đức Kiên","Lê Thị Kim Loan","Danh Thanh Nhàn","Huỳnh Ngọc Tuyết Nhi","Phạm Hoàng An Nhiên","Huỳnh Khánh Như","Mai Quỳnh Như","Huỳnh Gia Phát","Nguyễn Hoàng Phát","Nguyễn Huỳnh Gia Phúc","Lê Minh Quân","Phạm Huỳnh Gia Quy","Lưu Phương Quyên","Nguyễn Thanh Thảo","Lộ Ngọc Quốc Thắng","Hồ Nhất Thiên","Châu Trí Thiện","Phan Quốc Thịnh","Hoàng Minh Thông","Nguyễn Minh Thuận","Huỳnh Minh Thư","Nguyễn Minh Thư","Nguyễn Kim Thảo Tiên","Hồ Ngọc Mai Trâm","Phan Ngọc Bảo Trân","Trần Minh Trí","Phạm Dương Anh Trường","Nguyễn Duy Tuấn","Trần Thanh Tùng","Nguyễn Minh Tú","Phạm Thanh Tú","Lê Tấn Hiệp","Phạm Hà An"],"5/3":["Nguyễn Khánh An","Hoàng Võ Hoàng Anh","Đào Vũ Phương Anh","Lưu Thị Ngọc Ánh","Lê Gia Bảo","Nguyễn Gia Bảo","Nguyễn Kim Bảo","Nguyễn Hữu Bình","Danh Mai Kim Châu","Danh Mai Ngọc Châu","Nguyễn Thị Ngọc Diệp","Trịnh Đăng Đại","Lê Thành Đạt","Nguyễn Phạm Hải Đăng","Ngụy Đình Minh Đoàn","Trịnh Minh Đức","Trần Thiên Đức","Nguyễn Ngọc Thanh Hà","Lê Huỳnh Gia Hân","Bùi Nhã Kỳ","Lê Hoàng Lan","Từ Hữu Lâm","Mai Phương Linh","Lâm Hoàng Minh","Trần Tuệ Minh","Lê Ngọc Diễm My","Thạch Thanh Ngân","Trần Thị Kim Ngân","Lê Huỳnh Ngọc","Hoàng Kim Nhật","Nguyễn Ngọc Minh Phát","Lê Hoàng Phi","Võ Hoàng Phúc","Lê Nguyễn Nhã Quỳnh","Nguyễn Xuân Sắc","Kiều Nguyễn Mai Trâm"],"5/4":["Trần Đức Anh","Trương Trọng Bách","Nguyễn Minh Đạt","Vũ Đức Giầu","Nguyễn Vinh Hải","Đoàn Gia Hân","Nguyễn Ngọc Quỳnh Hoa","Nguyễn Phương Quốc Khánh","Trần Nhật Đăng Khôi","Lê Tuấn Kiệt","Sơn Thị Thùy Linh","Phan Công Minh","Đoàn Hoàng Nam","Chu Thiện Nhân","Trịnh Văn Phi","Trần Đỗ Thiên Phúc","Ngô Minh Quang","Hà Thảo Quy","Nguyễn Minh Quý","Lê Tuấn Tài","Lê Hữu Tâm","Ngô Lan Thảo","Trần Quốc Thịnh","Trương Ngọc Tiền","Trần Thị Ngọc Trang","Đỗ Ngọc Trâm","Hoàng Lê Huyền Trân","Đỗ Tống Nhã Uyên","Nguyễn Trúc Vân","Bùi Ái Vy","Khưu Trần Như Ý","Sỹ Khánh An","Thạch Thị Ngọc Mi"],"5/5":["Bành Dương Tuấn Anh","Nguyễn Hoài Anh","Nguyễn Huỳnh Trâm Anh","Nguyễn Phúc Nhật Anh","Phạm Kim Ngọc Bích","Nguyễn Hoàng Dương","Trần Minh Đạt","Trương Lê Khả Hân","Đỗ Mai Hân","Phạm Minh Hiển","Dương Thanh Hoàng","Trần Đức Hùng","Võ Phúc Hưng","Huỳnh Quốc Khánh","Nguyễn Anh Khoa","Võ Hoàng Phương Linh","Trương Khánh Linh","Trần nguyễn Phước Long","Cao Phan Minh","Nguyễn Huy Nghĩa","Đỗ Ngọc Yến Nhi","Vòng Trấn Ngọc Nhi","Trần Ngọc Quỳnh Như","Lê Huy Phát","Lê Văn Anh Quốc","Bùi Lâm Nhã Thanh","Bùi Chí Thiện","Nguyễn Phúc Thịnh","Mai Ngọc Bảo Trân","Nguyễn Phương Uyên","Nguyễn Ngọc Hạ Vy","Nguyễn Ngọc Như Ý","Lê Nguyễn Tường Vy","Võ Bích Ngọc"],"5/6":["Ngô Gia An","Phạm Trâm Anh","Nguyễn Thị Ngọc Ánh","Hoàng Duy Đức","Lê Đức Hiếu","Trương Minh Hiếu","Hoàng Khánh Hoà","Nguyễn Tuấn Kiệt","Nguyễn Minh Lâm","Võ Thành Lộc","Đỗ Trần Thảo My","Nguyễn Hoàng Nam","Nguyễn Lê Kim Ngân","Dương Nguyễn Thành Nghĩa","Đinh Khánh Ngọc","Trần Thảo Nguyên","Lê Thị Ngọc Như","Lê Tố Như","Trần Anh Phát","Nguyễn Đức Phát","Nguyễn Gia Phát","Nguyễn Gia Phú","Viên Gia Phúc","Lê Văn Phúc","Phan Huỳnh Xuân Phúc","Nguyễn Ngọc Phương Quyên","Nguyễn Đức Tài","Nguyễn Đặng Anh Thư","Võ Thị Phương Trang","Lê Ngọc Huyền Trân","Nguyễn Anh Tuấn","Dương Cẩm Tuyền","Nguyễn Ngọc Tú Uyên","Nguyễn Đình Trác Việt","Mai Hoàng Gia Vy","Nguyễn Phương Vy"],"1/1":["Nguyễn Hoàng Mai Anh","Phan Nguyễn Ngọc Bích","Hoàng Lê Doanh","Đoàn Thành Đạt","Trương Minh Hằng","Trần Minh Hiếu","Lê Gia Huy","Nguyễn Văn Gia Huy","Phạm Gia Khang","Huỳnh Lâm Phước Khang","Nguyễn Phúc Khang","Thái Phúc Khang","Võ Văn Huy Khang","Trần Hoàng Bảo Khanh","Trương Anh Khoa","Trần Hoàng Khôi","Đào Minh Khôi","Vũ Ngọc Tuệ Mẫn","Trần Tiến Minh","Lã Ngọc Khải My","Nguyễn Thị Kim Ngân","Nguyễn Huỳnh Gia Nghi","Nguyễn Bảo Ngọc","Lê Hồng Ngọc","Lê Mai Ngọc","Lê Phạm Bảo Ngọc","Nguyễn Đăng Nhi","Nguyễn Hoàng Yến Nhi","Nguyễn Trương Hoàng Phúc","Nguyễn Hà Phương","Nguyễn Minh Tâm","Nguyễn Phúc Kiến Thành","Ngô Trần Thu Thủy","Vũ Tú Uyên"],"1/4":["Nguyễn Hà An","Trần Quỳnh Bình An","Văn Ngọc Bảo Anh","Nguyễn Phùng Tú Anh","Mai Tuyết Anh","Nguyễn Huy Đức","Đặng Gia Hân","Võ Chí Hiếu","Dương Đức Hiếu","Đoàn Phúc Hưng","Nguyễn Phúc Hưng","Nguyễn Công Minh Khôi","Lê Nguyễn Bạch Kim","Phan Hoàng Ánh Linh","Ngô Hoàng Long","Lê Hoàng Quang Minh","Lê Bùi Huyền My","Trần Thị Tuyết My","Nguyễn Hồng Ngọc","Phạm Như Ngọc","Nguyễn Thành Nhân","Nguyễn Phan Minh Nhật","Phạm Đăng Phát","Bùi Hoàng Gia Phát","Trần Thanh Phong","Nguyễn Minh Phú","Lê Minh Phúc","Huỳnh Tú Tài","Trần Thị Thanh Thơ","Trần Gia Tín","Lê Bùi Huyền Trang","Đoàn Nguyễn Quế Trân","Lê Bảo Xuyên","Huỳnh Như Ý"]};
+const CLASSES=['5/1','5/2','5/3','5/4','5/5','5/6','4/1','4/2','4/3','4/4','4/5','4/6','1/1','1/4'];
+const LESSONS_BY_GRADE={
+ '1':[
+  {topic:'Chủ đề 1 · Đội hình đội ngũ',items:[
+   {name:'Bài 1 · Các tư thế đứng nghiêm, đứng nghỉ',content:['Tư thế đứng nghiêm','Tư thế đứng nghỉ']},
+   {name:'Bài 2 · Tập hợp đội hình hàng dọc, dóng hàng, điểm số',content:['Tập hợp hàng dọc','Dóng hàng','Điểm số theo đội hình hàng dọc']},
+   {name:'Bài 3 · Tập hợp đội hình hàng ngang, dóng hàng, điểm số, dàn hàng, dồn hàng',content:['Tập hợp hàng ngang','Dóng hàng ngang','Điểm số theo đội hình hàng ngang','Dàn hàng ngang','Dồn hàng ngang']},
+   {name:'Bài 4 · Động tác quay các hướng',content:['Quay trái','Quay phải','Quay sau']}
+  ]},
+  {topic:'Chủ đề 2 · Bài tập thể dục',items:[
+   {name:'Bài 1 · Động tác vươn thở, động tác tay',content:['Động tác vươn thở','Động tác tay']},
+   {name:'Bài 2 · Động tác chân, động tác vặn mình, động tác bụng',content:['Động tác chân','Động tác vặn mình','Động tác bụng']},
+   {name:'Bài 3 · Động tác phối hợp, động tác điều hòa',content:['Động tác phối hợp','Động tác điều hòa']}
+  ]},
+  {topic:'Chủ đề 3 · Tư thế và kĩ năng vận động cơ bản',items:[
+   {name:'Bài 1 · Vận động của đầu, cổ',content:['Động tác cúi đầu','Động tác ngửa đầu','Động tác nghiêng đầu sang trái','Động tác nghiêng đầu sang phải','Động tác quay đầu sang trái','Động tác quay đầu sang phải','Động tác xoay đầu một vòng từ trái sang phải','Động tác xoay đầu một vòng từ phải sang trái','Bài tập phối hợp các động tác đầu và cổ']},
+   {name:'Bài 2 · Vận động của tay',content:['Hai tay ra trước','Hai tay dang ngang','Hai tay lên cao','Bài tập phối hợp các động tác tay']}
+  ]},
+  {topic:'Phần 3 · Thể thao tự chọn',items:[{name:'Thể thao tự chọn',content:['Nội dung do nhà trường lựa chọn']}]}
+ ],
+ '4':[
+  {topic:'Chủ đề 1 · Đội hình đội ngũ',items:[
+   {name:'Bài 1 · Đi đều vòng bên phải',content:['Đi đều vòng bên phải','Một hàng dọc đi đều vòng bên phải','Nhiều hàng dọc đi đều vòng bên phải']},
+   {name:'Bài 2 · Đi đều vòng bên trái',content:['Đi đều vòng bên trái','Một hàng dọc đi đều vòng bên trái','Nhiều hàng dọc đi đều vòng bên trái']},
+   {name:'Bài 3 · Đi đều vòng sau',content:['Đi đều vòng sau bên phải','Đi đều vòng sau bên trái']}
+  ]},
+  {topic:'Chủ đề 2 · Bài tập thể dục',items:[
+   {name:'Bài 1 · Động tác vươn thở, động tác tay, động tác chân với vòng',content:['Động tác vươn thở','Động tác tay','Động tác chân với vòng']},
+   {name:'Bài 2 · Động tác lườn, động tác lưng – bụng, động tác toàn thân với vòng',content:['Động tác lườn','Động tác lưng – bụng','Động tác toàn thân với vòng']},
+   {name:'Bài 3 · Động tác nhảy, động tác điều hòa với vòng',content:['Động tác nhảy','Động tác điều hòa với vòng']}
+  ]},
+  {topic:'Chủ đề 3 · Tư thế và kĩ năng vận động cơ bản',items:[
+   {name:'Bài 1 · Bài tập rèn luyện kĩ năng thăng bằng',content:['Bài tập rèn luyện kĩ năng thăng bằng']},
+   {name:'Bài 2 · Bài tập rèn luyện kĩ năng bật xa',content:['Bài tập rèn luyện kĩ năng bật xa']}
+  ]},
+  {topic:'Phần 3 · Thể thao tự chọn',items:[{name:'Thể thao tự chọn',content:['Nội dung do nhà trường lựa chọn']}]}
+ ],
+ '5':[
+  {topic:'Chủ đề 1 · Đội hình đội ngũ',items:[
+   {name:'Bài 1 · Bài tập phối hợp đội hình đội ngũ',content:['Bài tập phối hợp đội hình hàng dọc và quay các hướng','Điểm số','Đứng nghỉ','Đứng nghiêm','Quay trái','Quay phải','Quay sau']},
+   {name:'Bài 2 · Bài tập phối hợp biến đổi đội hình',content:['Bài tập phối hợp biến đổi đội hình']},
+   {name:'Bài 3 · Bài tập phối hợp đi đều vòng các hướng',content:['Bài tập phối hợp đi đều vòng các hướng']}
+  ]},
+  {topic:'Chủ đề 2 · Bài tập thể dục',items:[
+   {name:'Bài 1 · Động tác vươn thở, động tác tay, động tác chân với gậy',content:['Động tác vươn thở','Động tác tay','Động tác chân với gậy']},
+   {name:'Bài 2 · Động tác bụng, động tác vặn mình, động tác toàn thân với gậy',content:['Động tác bụng','Động tác vặn mình','Động tác toàn thân với gậy']},
+   {name:'Bài 3 · Động tác nhảy, động tác điều hòa với gậy',content:['Động tác nhảy','Động tác điều hòa với gậy']}
+  ]},
+  {topic:'Chủ đề 3 · Tư thế và kĩ năng vận động cơ bản',items:[
+   {name:'Bài 1 · Bài tập rèn luyện kĩ năng lăn',content:['Bài tập rèn luyện kĩ năng lăn']},
+   {name:'Bài 2 · Bài tập rèn luyện kĩ năng lộn xuôi',content:['Bài tập rèn luyện kĩ năng lộn xuôi','Chỉ tập động tác lộn xuôi khi có thảm']}
+  ]},
+  {topic:'Phần 3 · Thể thao tự chọn',items:[{name:'Thể thao tự chọn',content:['Nội dung do nhà trường lựa chọn']}]}
+ ]
+};
+function gradeOfClass(c){return String(c||'').split('/')[0]}
+function topicsForClass(c){return LESSONS_BY_GRADE[gradeOfClass(c)]||[]}
+function selectedLessonText(){
+ const topicSel=$('#topicSel'), lessonSel=$('#lessonSel'), contentSel=$('#contentSel');
+ const lessonIndex=lessonSel.value, contentIndex=contentSel.value;
+ if(lessonIndex==='') return $('#lesson').value.trim();
+ const lessonText=lessonSel.options[lessonSel.selectedIndex]?.textContent?.trim()||'';
+ const contentText=contentIndex!=='' ? (contentSel.options[contentSel.selectedIndex]?.textContent?.trim()||'') : '';
+ return contentText ? `${lessonText} — ${contentText}` : lessonText;
+}
+function populateLessonSelectors(){
+ const topics=topicsForClass(state.className);
+ $('#topicSel').innerHTML='<option value="">— Chọn chủ đề —</option>'+topics.map((x,i)=>`<option value="${i}">${esc(x.topic)}</option>`).join('');
+ $('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>';
+ $('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>';
+ const current=state.lesson||'';
+ let ti=-1,ii=-1,ci=-1;
+ topics.forEach((t,i)=>t.items.forEach((it,j)=>{
+   it.content.forEach((co,k)=>{
+     const full=`${it.name} — ${co}`;
+     if(current===full){ti=i;ii=j;ci=k}
+   });
+   if(current===it.name){ti=i;ii=j}
+ }));
+ if(ti<0){
+   topics.forEach((t,i)=>t.items.forEach((it,j)=>{if(current===it.name){ti=i;ii=j}}));
+ }
+ if(ti>=0){
+   $('#topicSel').value=String(ti);
+   $('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>'+topics[ti].items.map((it,j)=>`<option value="${j}">${esc(it.name)}</option>`).join('');
+   if(ii>=0){
+     $('#lessonSel').value=String(ii);
+     $('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>'+topics[ti].items[ii].content.map((co,k)=>`<option value="${k}">${esc(co)}</option>`).join('');
+     if(ci>=0) $('#contentSel').value=String(ci);
+   }
+   $('#lesson').value='';
+ } else $('#lesson').value=current;
+}
+function setLessonFromSelectors(){
+ state.lesson=selectedLessonText();
+ save();
+}
+
+const LABELS=['Tích cực','Tiến bộ','Kỹ thuật tốt','Thiếu tập trung','Quên trang phục','Không tham gia (ốm/miễn)','Cần hỗ trợ thêm','Năng khiếu','Tuân thủ nội quy','Tập luyện tốt','Tích cực tham gia','Nói chuyện trong giờ','Không thực hiện yêu cầu','Làm ảnh hưởng bạn khác','Chưa chuẩn bị/đúng giờ'];
+const KEY='gdtc_fast_v2';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const today=()=>{const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let state=load(); let filter='all'; let activeSid=null;
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(!x)return newState();x.version=3;x.customClasses=x.customClasses||{};x.records=x.records||{};return x}catch(e){return newState()}}
+function newState(){return {version:3,date:today(),className:'5/1',period:'',lesson:'',autoNext:true,theme:'auto',records:{},customClasses:{}}}
+function save(){localStorage.setItem(KEY,JSON.stringify(state));const el=$('#saveStatus');if(el){el.textContent='Đã lưu';clearTimeout(save._t);save._t=setTimeout(()=>{if(el)el.textContent='Đang hoạt động'},900)}const st=$('#storageStatus');if(st)st.textContent='Dữ liệu đang lưu trên thiết bị này · '+Object.keys(state.records||{}).length+' bản ghi';}
+function key(sid){return [state.date,state.className,state.period||'',state.lesson||'',sid].join('|')}
+function rec(sid){return state.records[key(sid)]||{level:'',tags:[],note:''}}
+function setRec(sid,patch){const k=key(sid),r={...rec(sid),studentName:students()[Number(sid)]||rec(sid).studentName||'',...patch};if(!r.level&&!r.tags.length&&!r.note)delete state.records[k];else state.records[k]=r;save()}
+function classNames(){return [...CLASSES,...Object.keys(state.customClasses||{}).filter(c=>!CLASSES.includes(c))]}
+function students(){return state.customClasses?.[state.className]?.students||PRELOAD[state.className]||[]}
+function isCustomClass(c){return !!state.customClasses?.[c]}
+function render(){
+ $('#classSel').innerHTML=classNames().map(c=>`<option ${c===state.className?'selected':''}>${c}</option>`).join('');
+ $('#dateSel').value=state.date;$('#periodSel').value=state.period;populateLessonSelectors();$('#autoNext').checked=state.autoNext;
+ const q=norm($('#search').value);const ss=students();let rows=ss.map((name,i)=>({name,i,sid:String(i)})).filter(x=>!q||norm(x.name).includes(q));
+ rows=rows.filter(x=>filter==='all'||(filter==='rated'?!!rec(x.sid).level:(filter==='commented'?(!!rec(x.sid).tags.length||!!rec(x.sid).note):!rec(x.sid).level)));
+ const html=rows.map(x=>rowHTML(x)).join('');$('#studentList').innerHTML=`<div class="student-list-head"><b>Danh sách học sinh</b><span class="small muted">${rows.length}/${ss.length} đang hiển thị</span></div>${html||'<div class="card empty">Không có học sinh phù hợp.</div>'}`;
+ updateStats(); renderClasses();
+}
+function rowHTML(x){const r=rec(x.sid),lv=r.level||'';return `<div class="student ${lv}" id="stu-${x.sid}"><div class="who" data-detail="${x.sid}"><div class="name">${x.i+1}. ${esc(x.name)}</div><div class="subline">${r.tags.length?esc(r.tags.slice(0,2).join(' · '))+(r.tags.length>2?' …':''):(r.note?'📝 Có ghi chú':'')}</div></div><div class="levels">${['T','H','C'].map(k=>`<button class="lv ${k} ${lv===k?'on':''}" data-level="${k}" data-sid="${x.sid}">${k}</button>`).join('')}</div></div>`}
+function updateStats(){const ss=students(),rs=ss.map((_,i)=>rec(String(i)).level).filter(Boolean);const total=ss.length,rated=rs.length,pct=total?Math.round(rated/total*100):0;$('#nRated').textContent=rated;$('#nT').textContent=rs.filter(x=>x==='T').length;$('#nH').textContent=rs.filter(x=>x==='H').length;$('#nC').textContent=rs.filter(x=>x==='C').length;$('#progressText').textContent=`${rated}/${total} · ${pct}%`;$('#progressRemaining').textContent=`${Math.max(0,total-rated)} học sinh chưa chấm`;$(' #progressRatedLabel'.trim()).textContent=`${rated} đã chấm`;$('#progressBar').style.width=pct+'%'}
+function renderClasses(){$('#classCards').innerHTML=classNames().map(c=>{const n=studentsForClass(c).length;return `<button type="button" class="btn" style="width:100%;margin:4px 0;text-align:left" data-class="${esc(c)}">🏫 Lớp ${esc(c)} <span class="muted">· ${n} HS</span></button>`}).join('')}
+function rate(sid,level){const old=rec(sid).level;setRec(sid,{level:old===level?'':level});render();if(state.autoNext&&old!==level)focusNext(sid)}
+function focusNext(sid){const idx=Number(sid),ss=students();for(let j=idx+1;j<ss.length;j++){if(!rec(String(j)).level){setTimeout(()=>document.getElementById('stu-'+j)?.scrollIntoView({behavior:'smooth',block:'center'}),30);return}}for(let j=0;j<idx;j++){if(!rec(String(j)).level){setTimeout(()=>document.getElementById('stu-'+j)?.scrollIntoView({behavior:'smooth',block:'center'}),30);return}}}
+function allLevel(level){students().forEach((_,i)=>setRec(String(i),{level}));render()}
+function clearAll(){
+ const period=state.period||'';
+ const scope=`ngày ${state.date}, lớp ${state.className}, tiết ${period||'—'}`;
+ if(!confirm(`Bỏ chấm T/H/C của ${scope}?\n\nTất cả mức T/H/C của tiết này sẽ được bỏ, dù trước đó đã chọn nội dung nào. Nhận xét nhanh và nhận xét khác vẫn được giữ nguyên.`)) return;
+ let changed=0;
+ const records=state.records||{};
+ for(const [k,r] of Object.entries(records)){
+   if(!r || !r.level) continue;
+   const parts=String(k).split('|');
+   // Khóa chuẩn: ngày | lớp | tiết | nội dung | STT.
+   // Không dùng nội dung để xác định bản ghi, vì nội dung có thể thay đổi
+   // hoặc chứa ký tự | ở các phiên bản cũ.
+   const sameDate=parts[0]===String(state.date);
+   const sameClass=parts[1]===String(state.className);
+   const samePeriod=parts[2]===period;
+   if(!sameDate || !sameClass || !samePeriod) continue;
+   r.level='';
+   changed++;
+   if(!(Array.isArray(r.tags)&&r.tags.length) && !r.note) delete records[k];
+ }
+ state.records=records;
+ save();
+ render();
+ alert(changed?`Đã bỏ chấm ${changed} lượt T/H/C của ${scope}. Nhận xét vẫn được giữ nguyên.`:'Không tìm thấy mức T/H/C nào của tiết này để bỏ chấm.');
+}
+
+function openDetail(sid){activeSid=sid;const r=rec(sid),name=students()[Number(sid)];$('#sheetContent').innerHTML=`<div class="sheethead"><div><b>${esc(name)}</b><div class="small muted">Lớp ${esc(state.className)} · ${esc(state.date)}${state.period?' · Tiết '+esc(state.period):''}</div></div><button class="btn" id="closeSheet">Đóng</button></div><div class="grid3" style="margin-top:10px">${['T','H','C'].map(k=>`<button class="lv ${k} ${r.level===k?'on':''}" style="width:auto" data-sheet-level="${k}">${k}</button>`).join('')}</div><div class="comment-title">Nhận xét nhanh</div><div class="comment-help">Chạm vào từng nhận xét để chọn/bỏ chọn.</div><div class="chips">${LABELS.map(t=>`<button class="chip ${r.tags.includes(t)?'on':''}" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div><textarea id="note" rows="3" placeholder="Nhận xét khác…">${esc(r.note)}</textarea><div class="actions" style="margin-top:8px"><button class="btn pri" id="saveDetail">Lưu</button><button class="btn" id="clearLevelDetail">↺ Bỏ chấm</button><button class="btn danger" id="clearDetail">Xóa nhận xét</button></div>`;$('#detail').style.display='block'}
+function closeDetail(){activeSid=null;$('#detail').style.display='none'}
+function backup(){const data=JSON.stringify({app:'Sổ GDTC – Ghi nhanh',version:3,exportedAt:new Date().toISOString(),state});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='sao-luu-GDTC-'+state.date+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function applyTheme(){document.documentElement.dataset.theme=state.theme;if(state.theme==='dark'){document.documentElement.style.setProperty('--bg','#0e1317');document.documentElement.style.setProperty('--card','#19212a');document.documentElement.style.setProperty('--ink','#eef2f5');document.documentElement.style.setProperty('--muted','#9aa7b3');document.documentElement.style.setProperty('--line','#2c3742')}else{for(const v of ['--bg','--card','--ink','--muted','--line'])document.documentElement.style.removeProperty(v)}}
+
+function rosterText(arr){return (arr||[]).join('\n')}
+function parseNames(text){return String(text||'').split(/\r?\n/).map(x=>x.trim()).filter(Boolean)}
+function renderClassManager(){
+ const names=classNames();
+ $('#manageClassSel').innerHTML=names.map(c=>`<option value="${esc(c)}">${esc(c)} · ${studentsForClass(c).length} HS</option>`).join('');
+ const current=state.className;if(names.includes(current))$('#manageClassSel').value=current;
+ loadManagedRoster();
+}
+function studentsForClass(c){return state.customClasses?.[c]?.students||PRELOAD[c]||[]}
+function loadManagedRoster(){const c=$('#manageClassSel').value||state.className;$('#manageStudents').value=rosterText(studentsForClass(c));const custom=isCustomClass(c);$('#deleteCustomClass').disabled=!custom;$('#classManageHint').textContent=custom?'Lớp tùy chỉnh: có thể sửa, cập nhật hoặc xóa.':'Lớp có sẵn từ dữ liệu dự án: không cho xóa lớp; có thể sao lưu và dùng nguyên danh sách gốc.'}
+function addClass(){const name=$('#newClassName').value.trim();const names=parseNames($('#newClassStudents').value);if(!name){alert('Vui lòng nhập tên lớp.');return}if(classNames().includes(name)){alert('Tên lớp đã tồn tại.');return}if(!names.length){alert('Vui lòng dán danh sách học sinh, mỗi em một dòng.');return}state.customClasses[name]={students:names};state.className=name;state.lesson='';save();$('#newClassName').value='';$('#newClassStudents').value='';render();renderClassManager();showPage('quick');alert(`Đã thêm lớp ${name} với ${names.length} học sinh.`)}
+function saveRoster(){const c=$('#manageClassSel').value;const names=parseNames($('#manageStudents').value);if(!c)return;if(!names.length){alert('Danh sách không được để trống.');return}if(!isCustomClass(c)){if(!confirm('Đây là lớp có sẵn. Lưu sẽ tạo bản tùy chỉnh ghi đè danh sách lớp này trên thiết bị. Tiếp tục?'))return}state.customClasses[c]={students:names,source:'edited'};state.className=c;save();render();renderClassManager();alert(`Đã lưu ${names.length} học sinh cho lớp ${c}.`)}
+function deleteCustomClass(){const c=$('#manageClassSel').value;if(!isCustomClass(c))return;if(!confirm(`Xóa lớp ${c} khỏi danh sách tùy chỉnh? Dữ liệu đánh giá cũ của lớp này trong bộ nhớ cũng sẽ được giữ nguyên nhưng lớp sẽ không còn xuất hiện trong danh sách.`))return;delete state.customClasses[c];if(state.className===c)state.className='5/1';save();render();renderClassManager()}
+function xmlEsc(v){
+  let s=String(v??'');
+  // XML 1.0 không cho phép các control character 0x00–0x1F ngoại trừ tab, LF, CR.
+  s=s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'');
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;').replace(/\r?\n/g,' ');
+}
+function excelText(v){
+  const s=String(v??'').trim();
+  return s.replace(/^\d+\s*[—-]\s*\d+$/,'') || s;
+}
+function zipStore(files){
+  // Tạo ZIP không nén (Store), tương thích Excel/Open XML.
+  const enc=new TextEncoder();
+  const u16=(n)=>new Uint8Array([n&255,(n>>>8)&255]);
+  const u32=(n)=>new Uint8Array([n&255,(n>>>8)&255,(n>>>16)&255,(n>>>24)&255]);
+  const crcTable=(()=>{const t=new Uint32Array(256);for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[n]=c>>>0}return t})();
+  const crc32=(data)=>{let c=0xFFFFFFFF;for(let i=0;i<data.length;i++)c=crcTable[(c^data[i])&255]^(c>>>8);return (c^0xFFFFFFFF)>>>0};
+  const chunks=[];const central=[];let offset=0;
+  for(const f of files){
+    const name=enc.encode(String(f.name));
+    const data=typeof f.data==='string'?enc.encode(f.data):new Uint8Array(f.data);
+    const crc=crc32(data), size=data.length;
+    const local=new Uint8Array(30+name.length+size);
+    let p=0;
+    local.set(u32(0x04034B50),p);p+=4;
+    local.set(u16(20),p);p+=2; // version needed
+    local.set(u16(0x0800),p);p+=2; // UTF-8 names
+    local.set(u16(0),p);p+=2; // store
+    local.set(u16(0),p);p+=2; local.set(u16(0),p);p+=2; // time/date
+    local.set(u32(crc),p);p+=4; local.set(u32(size),p);p+=4; local.set(u32(size),p);p+=4;
+    local.set(u16(name.length),p);p+=2; local.set(u16(0),p);p+=2;
+    local.set(name,p);p+=name.length; local.set(data,p);
+    chunks.push(local);
+    const cdir=new Uint8Array(46+name.length);p=0;
+    cdir.set(u32(0x02014B50),p);p+=4;
+    cdir.set(u16(20),p);p+=2; cdir.set(u16(20),p);p+=2;
+    cdir.set(u16(0x0800),p);p+=2; cdir.set(u16(0),p);p+=2;
+    cdir.set(u16(0),p);p+=2; cdir.set(u16(0),p);p+=2;
+    cdir.set(u32(crc),p);p+=4; cdir.set(u32(size),p);p+=4; cdir.set(u32(size),p+=0);p+=4;
+    cdir.set(u16(name.length),p);p+=2; cdir.set(u16(0),p);p+=2; cdir.set(u16(0),p);p+=2;
+    cdir.set(u16(0),p);p+=2; cdir.set(u16(0),p);p+=2; cdir.set(u32(0),p);p+=4;
+    cdir.set(u32(offset),p);p+=4; cdir.set(name,p);
+    central.push(cdir);offset+=local.length;
+  }
+  const centralSize=central.reduce((a,b)=>a+b.length,0), centralOffset=offset;
+  const end=new Uint8Array(22);let p=0;
+  end.set(u32(0x06054B50),p);p+=4;end.set(u16(0),p);p+=2;end.set(u16(0),p);p+=2;
+  end.set(u16(files.length),p);p+=2;end.set(u16(files.length),p);p+=2;
+  end.set(u32(centralSize),p);p+=4;end.set(u32(centralOffset),p);p+=4;end.set(u16(0),p);
+  const out=new Uint8Array(offset+centralSize+22);let at=0;
+  for(const c of chunks){out.set(c,at);at+=c.length} for(const c of central){out.set(c,at);at+=c.length} out.set(end,at);
+  return out;
+}
+function downloadExcel(filename,rows,sheetName='Đánh giá'){
+  const cleanRows=(rows||[]).map(r=>(r||[]).map(v=>String(v??'').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').trim()));
+  const safeSheet=String(sheetName||'Đánh giá').replace(/[\\\/?*\[\]:]/g,' ').trim().slice(0,31)||'Đánh giá';
+  const colLetters=n=>{let s='';while(n){const r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s};
+  const cols=cleanRows[0]?.length||1;
+  const lastRef=`${colLetters(cols)}${Math.max(1,cleanRows.length)}`;
+  const widths=[14,10,10,58,8,30,10,42,48];
+  const colsXml='<cols>'+Array.from({length:cols},(_,i)=>`<col min="${i+1}" max="${i+1}" width="${widths[i]||24}" customWidth="1"/>`).join('')+'</cols>';
+  const rowsXml=cleanRows.map((row,ri)=>`<row r="${ri+1}">${row.map((v,ci)=>{const ref=colLetters(ci+1)+(ri+1);return `<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`}).join('')}</row>`).join('');
+  const sheet=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">`+
+    `<dimension ref="A1:${lastRef}"/>`+
+    `<sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/></sheetView></sheetViews>`+
+    `<sheetFormatPr defaultRowHeight="18"/>${colsXml}<sheetData>${rowsXml}</sheetData>`+
+    `<autoFilter ref="A1:${lastRef}"/>`+
+    `<pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/>`+
+    `</worksheet>`;
+  const workbook=`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>`+
+    `<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="${xmlEsc(safeSheet)}" sheetId="1" r:id="rId1"/></sheets></workbook>`;
+  const files=[
+    {name:'[Content_Types].xml',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>`},
+    {name:'_rels/.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+    {name:'xl/workbook.xml',data:workbook},
+    {name:'xl/_rels/workbook.xml.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/></Relationships>`},
+    {name:'xl/worksheets/sheet1.xml',data:sheet}
+  ];
+  const bytes=zipStore(files);
+  const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+  const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename.replace(/\.xls$/i,'.xlsx');document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function exportCurrent(){
+ const selected=selectedLessonText();
+ const fallback=(selected && !/^\d+\s*[—-]\s*\d+$/.test(selected))?selected:(state.lesson||'Chưa chọn nội dung');
+ const rows=[['Ngày','Lớp','Tiết','Nội dung','STT','Học sinh','Mức','Nhận xét nhanh','Nhận xét khác']];
+ students().forEach((name,i)=>{
+   const r=rec(String(i));
+   const lesson=(r&&r.lesson&& !/^\d+\s*[—-]\s*\d+$/.test(String(r.lesson)))?r.lesson:fallback;
+   rows.push([state.date,state.className,state.period,lesson,i+1,name,r.level,r.tags.join(' · '),r.note]);
+ });
+ downloadExcel(`GDTC-${state.className}-${state.date}.xlsx`,rows,'Đánh giá');
+}
+function recordEntries(){const out=[];for(const [k,r0] of Object.entries(state.records||{})){const p=k.split('|');if(p.length<5)continue;const r=r0||{};out.push({date:p[0],className:p[1],period:p[2],lesson:p.slice(3,-1).join('|'),sid:p[p.length-1],level:r.level||'',tags:r.tags||[],note:r.note||'',studentName:r.studentName||studentsForClass(p[1])[Number(p[p.length-1])]||''})}return out}
+function renderReport(){const names=classNames();$('#reportClassSel').innerHTML='<option value="">Tất cả lớp</option>'+names.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');if(!$('#reportFrom').value){const d=new Date();d.setDate(d.getDate()-30);$('#reportFrom').value=d.toISOString().slice(0,10)}if(!$('#reportTo').value)$('#reportTo').value=state.date||today();populateReportStudents();buildReportTable()}
+function populateReportStudents(){const c=$('#reportClassSel').value;const ss=c?studentsForClass(c):[];$('#reportStudentSel').innerHTML='<option value="">Tất cả học sinh</option>'+ss.map((n,i)=>`<option value="${i}">${i+1}. ${esc(n)}</option>`).join('')}
+function buildReportTable(){const from=$('#reportFrom').value,to=$('#reportTo').value,c=$('#reportClassSel').value,sid=$('#reportStudentSel').value;let es=recordEntries().filter(x=>(!from||x.date>=from)&&(!to||x.date<=to)&&(!c||x.className===c)&&(!sid||x.sid===sid)&&!!x.level);es.sort((a,b)=>a.date.localeCompare(b.date)||a.className.localeCompare(b.className)||Number(a.sid)-Number(b.sid));let t=es.reduce((a,x)=>(a[x.level]=(a[x.level]||0)+1,a),{});$('#rRated').textContent=es.length;$('#rT').textContent=t.T||0;$('#rH').textContent=t.H||0;$('#rC').textContent=t.C||0;$('#reportSummary').textContent=es.length?`Có ${es.length} lượt đánh giá trong khoảng ${from||'…'} đến ${to||'…'}${c?' · lớp '+c:''}.`:'Chưa có dữ liệu trong khoảng thời gian đã chọn.';$('#reportTable tbody').innerHTML=es.map(x=>`<tr><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.date)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.className)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.studentName)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.period)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.lesson)}</td><td style="padding:7px;text-align:center;border-bottom:1px solid var(--line);font-weight:800">${esc(x.level)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc([...x.tags,x.note].filter(Boolean).join(' · '))}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">Không có dữ liệu.</td></tr>';return es}
+function exportReport(){const es=buildReportTable();const rows=[['Ngày','Lớp','Tiết','Nội dung','STT','Học sinh','Mức','Nhận xét']];es.forEach(x=>rows.push([x.date,x.className,x.period,x.lesson,Number(x.sid)+1,x.studentName,x.level,[...x.tags,x.note].filter(Boolean).join(' · ')]));downloadExcel(`Bao-cao-GDTC-${$('#reportClassSel').value||'tat-ca'}-${$('#reportFrom').value}-${$('#reportTo').value}.xlsx`,rows,'Báo cáo')}
+function showPage(page){
+ const valid=['quick','classes','report','data'];
+ const p=valid.includes(page)?page:'quick';
+ $$('.page').forEach(x=>x.classList.toggle('on',x.id==='page'+p.charAt(0).toUpperCase()+p.slice(1)));
+ $$('nav [data-page]').forEach(x=>x.classList.toggle('on',x.dataset.page===p));
+ if(p==='classes')renderClassManager();
+ if(p==='report'){renderReport();buildReportTable()}
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.addEventListener('click',e=>{
+ const lv=e.target.closest('[data-level]');if(lv){rate(lv.dataset.sid,lv.dataset.level);return}
+ const who=e.target.closest('[data-detail]');if(who){openDetail(who.dataset.detail);return}
+ const f=e.target.closest('[data-filter]');if(f){filter=f.dataset.filter;$$('#filters [data-filter]').forEach(x=>x.classList.toggle('on',x===f));render();return}
+ const c=e.target.closest('[data-class]');if(c){state.className=c.dataset.class;save();showPage('quick');render();return}
+ const page=e.target.closest('[data-page]');if(page){showPage(page.dataset.page);return}
+ if(e.target.id==='allH')allLevel('H');if(e.target.id==='allT')allLevel('T');if(e.target.id==='allC')allLevel('C');if(e.target.id==='clearAll')clearAll();if(e.target.id==='backupBtn'||e.target.id==='backup2')backup();if(e.target.id==='exportCurrent')exportCurrent();if(e.target.id==='themeBtn'){state.theme=state.theme==='dark'?'light':'dark';save();applyTheme()}
+ if(e.target.id==='closeSheet'||e.target.closest('#closeSheet'))closeDetail();
+ const sl=e.target.closest('[data-sheet-level]');if(sl){const old=rec(activeSid).level;setRec(activeSid,{level:old===sl.dataset.sheetLevel?'':sl.dataset.sheetLevel});openDetail(activeSid);render()}
+ const tg=e.target.closest('[data-tag]');if(tg){const r=rec(activeSid);const t=tg.dataset.tag;const tags=r.tags.includes(t)?r.tags.filter(x=>x!==t):[...r.tags,t];setRec(activeSid,{tags});openDetail(activeSid)}
+ if(e.target.id==='saveDetail'){const r=rec(activeSid);setRec(activeSid,{note:$('#note').value.trim()});closeDetail();render()}
+ if(e.target.id==='clearLevelDetail'){setRec(activeSid,{level:''});openDetail(activeSid);render()}
+ if(e.target.id==='clearDetail'){setRec(activeSid,{tags:[],note:''});closeDetail();render()}
+ if(e.target.id==='reset'){if(confirm('Xóa toàn bộ dữ liệu đánh giá? Danh sách lớp tùy chỉnh sẽ được giữ lại.\n\nApp sẽ tải một bản sao lưu JSON trước khi xóa để tránh mất dữ liệu.')){backup();state.records={};state.date=today();state.period='';state.lesson='';save();render();alert('Đã xóa dữ liệu đánh giá.')}}
+ if(e.target.id==='addClass')addClass();if(e.target.id==='clearClassForm'){$('#newClassName').value='';$('#newClassStudents').value=''}if(e.target.id==='saveRoster')saveRoster();if(e.target.id==='deleteCustomClass')deleteCustomClass();if(e.target.id==='refreshReport')buildReportTable();if(e.target.id==='exportReport')exportReport();
+});
+$('#classSel').addEventListener('change',e=>{state.className=e.target.value;state.lesson='';save();render()});$('#dateSel').addEventListener('change',e=>{state.date=e.target.value||today();save();render()});$('#periodSel').addEventListener('change',e=>{state.period=e.target.value;save();render()});$('#topicSel').addEventListener('change',e=>{const topics=topicsForClass(state.className),ti=Number(e.target.value);$('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>'+(Number.isFinite(ti)&&topics[ti]?topics[ti].items.map((it,j)=>`<option value="${j}">${esc(it.name)}</option>`).join(''):'');$('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>';state.lesson='';$('#lesson').value='';save()});$('#lessonSel').addEventListener('change',e=>{const topics=topicsForClass(state.className),ti=Number($('#topicSel').value),ii=Number(e.target.value),it=topics[ti]?.items[ii];$('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>'+(it?it.content.map((co,k)=>`<option value="${k}">${esc(co)}</option>`).join(''):'');state.lesson=it?it.name:'';$('#lesson').value='';save()});$('#contentSel').addEventListener('change',e=>{setLessonFromSelectors()});$('#lesson').addEventListener('input',e=>{state.lesson=e.target.value;save()});$('#search').addEventListener('input',render);$('#autoNext').addEventListener('change',e=>{state.autoNext=e.target.checked;save()});$('#restore').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.state)throw 0;if(confirm('Khôi phục sẽ ghi đè dữ liệu đánh giá hiện tại. Tiếp tục?')){state=o.state;state.customClasses=state.customClasses||{};state.version=3;save();render();alert('Đã khôi phục dữ liệu.')}}catch(_){alert('File sao lưu không hợp lệ.')}};rd.readAsText(f);e.target.value='' });
+$('#manageClassSel').addEventListener('change',()=>{const c=$('#manageClassSel').value;state.className=c;save();loadManagedRoster()});$('#reportClassSel').addEventListener('change',()=>{populateReportStudents();buildReportTable()});$('#reportFrom').addEventListener('change',buildReportTable);$('#reportTo').addEventListener('change',buildReportTable);$('#reportStudentSel').addEventListener('change',buildReportTable);
+applyTheme();render();showPage('quick');
+if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
+</script>
+</body></html>
