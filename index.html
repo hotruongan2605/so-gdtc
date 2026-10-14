@@ -382,7 +382,7 @@ function excelSheetXml(rows){
 }
 function excelBytesMulti(sheets){
  const safeNames=[],seen=new Set();
- const cleanName=n=>String(n||'Lớp').replace(/[\\\\/?*\\[\\]:]/g,'-').trim().slice(0,31)||'Lop';
+ const cleanName=n=>String(n||'Lớp').replace(/[\\/?*\[\]:]/g,'-').trim().slice(0,31)||'Lop';
  const normalized=sheets.map((sh,i)=>{let name=cleanName(sh.name),base=name,k=2;while(seen.has(name.toLowerCase())){const suffix=' ('+k++ +')';name=base.slice(0,31-suffix.length)+suffix}seen.add(name.toLowerCase());safeNames.push(name);return {name,rows:sh.rows}});
  const sheetEntries=normalized.map((sh,i)=>({name:`xl/worksheets/sheet${i+1}.xml`,data:excelSheetXml(sh.rows)}));
  const overrides=normalized.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('');
