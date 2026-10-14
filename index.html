@@ -372,7 +372,7 @@ function exportCurrent(){
  downloadExcel(`GDTC-${state.className}-${state.date}.xlsx`,rows,'Đánh giá');
 }
 function excelSheetXml(rows){
- const cleanRows=(rows||[]).map(r=>(r||[]).map(v=>String(v??'').replace(/[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F]/g,'').trim()));
+ const cleanRows=(rows||[]).map(r=>(r||[]).map(v=>String(v??'').replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g,'').trim()));
  const colLetters=n=>{let s='';while(n){const r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s};
  const cols=cleanRows[0]?.length||1,lastRef=`${colLetters(cols)}${Math.max(1,cleanRows.length)}`;
  const widths=[14,10,10,58,8,30,14,42,48];
