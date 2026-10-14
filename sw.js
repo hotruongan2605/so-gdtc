@@ -1,4 +1,4 @@
-const CACHE='gdtc-v2-3';
+const CACHE='gdtc-v2-4';
 const ASSETS=['./','./index.html','./manifest.webmanifest','./icon.svg'];
 
 self.addEventListener('install',event=>{
