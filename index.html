@@ -315,7 +315,7 @@ function zipStore(files){
     cdir.set(u16(20),p);p+=2; cdir.set(u16(20),p);p+=2;
     cdir.set(u16(0x0800),p);p+=2; cdir.set(u16(0),p);p+=2;
     cdir.set(u16(0),p);p+=2; cdir.set(u16(0),p);p+=2;
-    cdir.set(u32(crc),p);p+=4; cdir.set(u32(size),p);p+=4; cdir.set(u32(size),p+=0);p+=4;
+    cdir.set(u32(crc),p);p+=4; cdir.set(u32(size),p);p+=4; cdir.set(u32(size),p);p+=4;
     cdir.set(u16(name.length),p);p+=2; cdir.set(u16(0),p);p+=2; cdir.set(u16(0),p);p+=2;
     cdir.set(u16(0),p);p+=2; cdir.set(u16(0),p);p+=2; cdir.set(u32(0),p);p+=4;
     cdir.set(u32(offset),p);p+=4; cdir.set(name,p);
