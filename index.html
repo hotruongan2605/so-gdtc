@@ -97,7 +97,7 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--card);bor
  <div class="card"><div class="small muted" id="reportSummary">Chưa có dữ liệu trong khoảng thời gian đã chọn.</div></div>
  <div class="card" style="overflow:auto"><table id="reportTable" style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Ngày</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Lớp</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">HS</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Tiết</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Nội dung</th><th style="padding:7px;border-bottom:1px solid var(--line)">Mức</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Nhận xét</th></tr></thead><tbody></tbody></table></div>
 </section>
-<section id="pageData" class="page"><div class="card"><h2 style="margin:0 0 8px">💾 Dữ liệu</h2><p class="small muted">Dữ liệu đánh giá được lưu trên trình duyệt của thiết bị này. Nên sao lưu định kỳ.</p><div class="grid2"><button class="btn pri" id="backup2">💾 Sao lưu JSON</button><button class="btn" id="exportCurrent">📊 Xuất Excel</button><button class="btn pri" id="exportAll">📚 Xuất toàn bộ đánh giá</button><label class="btn">📥 Khôi phục JSON<input id="restore" type="file" accept="application/json,.json" style="display:none"></label></div><button class="btn danger" id="reset" style="width:100%;margin-top:8px">Xóa toàn bộ dữ liệu đánh giá</button></div><div class="card"><b>📱 Dùng trên điện thoại & máy tính</b><p class="small muted">Bản này hoạt động offline và dữ liệu nằm trên từng thiết bị. Hãy sao lưu JSON thường xuyên. Khi triển khai thành website HTTPS, có thể cài như ứng dụng PWA và dùng offline.</p></div><div class="card"><b>14 lớp đang quản lý</b><p class="small muted" id="storageStatus" style="margin:6px 0 0">Dữ liệu đang lưu trên thiết bị này.</p><p class="small muted">5/1–5/6 · 4/1–4/6 · 1/1 · 1/4. Danh sách học sinh được nạp từ nguồn dữ liệu hiện có của dự án.</p></div></section>
+<section id="pageData" class="page"><div class="card"><h2 style="margin:0 0 8px">💾 Dữ liệu</h2><p class="small muted">Dữ liệu đánh giá được lưu trên trình duyệt của thiết bị này. Nên sao lưu định kỳ.</p><div class="grid2"><button class="btn pri" id="backup2">💾 Sao lưu JSON</button><button class="btn" id="exportCurrent">📊 Xuất Excel</button><button class="btn pri" id="exportAll">📚 Xuất tất cả lớp (mỗi lớp 1 sheet)</button><button class="btn" id="exportSeparate">📁 Xuất riêng từng lớp (ZIP)</button><label class="btn">📥 Khôi phục JSON<input id="restore" type="file" accept="application/json,.json" style="display:none"></label></div><button class="btn danger" id="reset" style="width:100%;margin-top:8px">Xóa toàn bộ dữ liệu đánh giá</button></div><div class="card"><b>📱 Dùng trên điện thoại & máy tính</b><p class="small muted">Bản này hoạt động offline và dữ liệu nằm trên từng thiết bị. Hãy sao lưu JSON thường xuyên. Khi triển khai thành website HTTPS, có thể cài như ứng dụng PWA và dùng offline.</p></div><div class="card"><b>14 lớp đang quản lý</b><p class="small muted" id="storageStatus" style="margin:6px 0 0">Dữ liệu đang lưu trên thiết bị này.</p><p class="small muted">5/1–5/6 · 4/1–4/6 · 1/1 · 1/4. Danh sách học sinh được nạp từ nguồn dữ liệu hiện có của dự án.</p></div></section>
 </main>
 <nav><button type="button" class="on" data-page="quick"><span>✏️</span>Ghi nhanh</button><button type="button" data-page="classes"><span>🏫</span>Lớp</button><button type="button" data-page="report"><span>📊</span>Báo cáo</button><button type="button" data-page="data"><span>💾</span>Dữ liệu</button></nav>
 <div id="detail"><div class="sheet"><div id="sheetContent"></div></div></div>
@@ -371,16 +371,56 @@ function exportCurrent(){
  });
  downloadExcel(`GDTC-${state.className}-${state.date}.xlsx`,rows,'Đánh giá');
 }
-function exportAllRecords(){
+function excelSheetXml(rows){
+ const cleanRows=(rows||[]).map(r=>(r||[]).map(v=>String(v??'').replace(/[\\u0000-\\u0008\\u000B\\u000C\\u000E-\\u001F]/g,'').trim()));
+ const colLetters=n=>{let s='';while(n){const r=(n-1)%26;s=String.fromCharCode(65+r)+s;n=Math.floor((n-1)/26)}return s};
+ const cols=cleanRows[0]?.length||1,lastRef=`${colLetters(cols)}${Math.max(1,cleanRows.length)}`;
+ const widths=[14,10,10,58,8,30,14,42,48];
+ const colsXml='<cols>'+Array.from({length:cols},(_,i)=>`<col min="${i+1}" max="${i+1}" width="${widths[i]||24}" customWidth="1"/>`).join('')+'</cols>';
+ const rowsXml=cleanRows.map((row,ri)=>`<row r="${ri+1}">${row.map((v,ci)=>`<c r="${colLetters(ci+1)}${ri+1}" t="inlineStr"><is><t xml:space="preserve">${xmlEsc(v)}</t></is></c>`).join('')}</row>`).join('');
+ return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><dimension ref="A1:${lastRef}"/><sheetViews><sheetView workbookViewId="0"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/></sheetView></sheetViews><sheetFormatPr defaultRowHeight="18"/>${colsXml}<sheetData>${rowsXml}</sheetData><autoFilter ref="A1:${lastRef}"/><pageMargins left="0.75" right="0.75" top="1" bottom="1" header="0.5" footer="0.5"/></worksheet>`;
+}
+function excelBytesMulti(sheets){
+ const safeNames=[],seen=new Set();
+ const cleanName=n=>String(n||'Lớp').replace(/[\\\\/?*\\[\\]:]/g,'-').trim().slice(0,31)||'Lop';
+ const normalized=sheets.map((sh,i)=>{let name=cleanName(sh.name),base=name,k=2;while(seen.has(name.toLowerCase())){const suffix=' ('+k++ +')';name=base.slice(0,31-suffix.length)+suffix}seen.add(name.toLowerCase());safeNames.push(name);return {name,rows:sh.rows}});
+ const sheetEntries=normalized.map((sh,i)=>({name:`xl/worksheets/sheet${i+1}.xml`,data:excelSheetXml(sh.rows)}));
+ const overrides=normalized.map((_,i)=>`<Override PartName="/xl/worksheets/sheet${i+1}.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>`).join('');
+ const sheetRefs=normalized.map((sh,i)=>`<sheet name="${xmlEsc(sh.name)}" sheetId="${i+1}" r:id="rId${i+1}"/>`).join('');
+ const rels=normalized.map((_,i)=>`<Relationship Id="rId${i+1}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet${i+1}.xml"/>`).join('');
+ const files=[
+  {name:'[Content_Types].xml',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>${overrides}</Types>`},
+  {name:'_rels/.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`},
+  {name:'xl/workbook.xml',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets>${sheetRefs}</sheets></workbook>`},
+  {name:'xl/_rels/workbook.xml.rels',data:`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">${rels}</Relationships>`},
+  ...sheetEntries
+ ];
+ return zipStore(files);
+}
+function downloadBytes(filename,bytes,type){
+ const blob=new Blob([bytes],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+function exportSeparateClassFiles(){
+ const groups=getExportGroups();
+ if(!groups.length){alert('Chưa tìm thấy bản ghi đánh giá để xuất.');return}
+ const files=groups.map(g=>({name:`GDTC-Lop-${g.name.replace(/[^\\p{L}\\p{N}-]+/gu,'-')}.xlsx`,data:excelBytesMulti([{name:g.name,rows:g.rows}])}));
+ downloadBytes('GDTC-Tung-lop.zip',zipStore(files),'application/zip');
+ alert('Đã đóng gói ${groups.length} file Excel, mỗi lớp một file, vào GDTC-Tung-lop.zip.');
+}
+function getExportGroups(){
  const es=recordEntries().filter(x=>!!x.level||((x.tags||[]).length>0)||!!x.note);
  es.sort((a,b)=>a.date.localeCompare(b.date)||a.className.localeCompare(b.className,undefined,{numeric:true})||Number(a.period||0)-Number(b.period||0)||Number(a.sid)-Number(b.sid));
- const rows=[['Ngày','Lớp','Tiết','Nội dung','STT','Học sinh','Mức đánh giá','Nhận xét nhanh','Nhận xét khác']];
- es.forEach(x=>rows.push([x.date,x.className,x.period,x.lesson,Number(x.sid)+1,x.studentName,x.level,(x.tags||[]).join(' · '),x.note]));
- if(!es.length){alert('Chưa tìm thấy bản ghi đánh giá để xuất.');return}
- const classes=[...new Set(es.map(x=>x.className))];
- const dates=[...new Set(es.map(x=>x.date))].sort();
- downloadExcel('GDTC-Toan-bo-danh-gia.xlsx',rows,'Toàn bộ đánh giá');
- alert('Đã tạo file Excel gồm '+es.length+' lượt đánh giá thuộc '+classes.length+' lớp, từ '+dates[0]+' đến '+dates[dates.length-1]+'.');
+ const header=['Ngày','Lớp','Tiết','Nội dung','STT','Học sinh','Mức đánh giá','Nhận xét nhanh','Nhận xét khác'];
+ const names=[...new Set(es.map(x=>x.className))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+ return names.map(name=>({name,rows:[header,...es.filter(x=>x.className===name).map(x=>[x.date,x.className,x.period,x.lesson,Number(x.sid)+1,x.studentName,x.level,(x.tags||[]).join(' · '),x.note])]}));
+}
+function exportAllRecords(){
+ const groups=getExportGroups();
+ if(!groups.length){alert('Chưa tìm thấy bản ghi đánh giá để xuất.');return}
+ const sheets=groups.map(g=>({name:g.name,rows:g.rows}));
+ downloadBytes('GDTC-Tat-ca-cac-lop.xlsx',excelBytesMulti(sheets),'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+ const count=groups.reduce((n,g)=>n+g.rows.length-1,0);
+ alert('Đã xuất '+count+' lượt đánh giá của '+groups.length+' lớp. Mỗi lớp nằm trong một sheet riêng.');
 }
 function recordEntries(){const out=[];for(const [k,r0] of Object.entries(state.records||{})){const p=k.split('|');if(p.length<5)continue;const r=r0||{};out.push({date:p[0],className:p[1],period:p[2],lesson:p.slice(3,-1).join('|'),sid:p[p.length-1],level:r.level||'',tags:r.tags||[],note:r.note||'',studentName:r.studentName||studentsForClass(p[1])[Number(p[p.length-1])]||''})}return out}
 function renderReport(){const names=classNames();$('#reportClassSel').innerHTML='<option value="">Tất cả lớp</option>'+names.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');if(!$('#reportFrom').value){const d=new Date();d.setDate(d.getDate()-30);$('#reportFrom').value=d.toISOString().slice(0,10)}if(!$('#reportTo').value)$('#reportTo').value=state.date||today();populateReportStudents();buildReportTable()}
@@ -403,7 +443,7 @@ document.addEventListener('click',e=>{
  const f=e.target.closest('[data-filter]');if(f){filter=f.dataset.filter;$$('#filters [data-filter]').forEach(x=>x.classList.toggle('on',x===f));render();return}
  const c=e.target.closest('[data-class]');if(c){state.className=c.dataset.class;save();showPage('quick');render();return}
  const page=e.target.closest('[data-page]');if(page){showPage(page.dataset.page);return}
- if(e.target.id==='allH')allLevel('H');if(e.target.id==='allT')allLevel('T');if(e.target.id==='allC')allLevel('C');if(e.target.id==='clearAll')clearAll();if(e.target.id==='backupBtn'||e.target.id==='backup2')backup();if(e.target.id==='exportCurrent')exportCurrent();if(e.target.id==='exportAll')exportAllRecords();if(e.target.id==='themeBtn'){state.theme=state.theme==='dark'?'light':'dark';save();applyTheme()}
+ if(e.target.id==='allH')allLevel('H');if(e.target.id==='allT')allLevel('T');if(e.target.id==='allC')allLevel('C');if(e.target.id==='clearAll')clearAll();if(e.target.id==='backupBtn'||e.target.id==='backup2')backup();if(e.target.id==='exportCurrent')exportCurrent();if(e.target.id==='exportAll')exportAllRecords();if(e.target.id==='exportSeparate')exportSeparateClassFiles();if(e.target.id==='themeBtn'){state.theme=state.theme==='dark'?'light':'dark';save();applyTheme()}
  if(e.target.id==='closeSheet'||e.target.closest('#closeSheet'))closeDetail();
  const sl=e.target.closest('[data-sheet-level]');if(sl){const old=rec(activeSid).level;setRec(activeSid,{level:old===sl.dataset.sheetLevel?'':sl.dataset.sheetLevel});openDetail(activeSid);render()}
  const tg=e.target.closest('[data-tag]');if(tg){const r=rec(activeSid);const t=tg.dataset.tag;const tags=r.tags.includes(t)?r.tags.filter(x=>x!==t):[...r.tags,t];setRec(activeSid,{tags});openDetail(activeSid)}
