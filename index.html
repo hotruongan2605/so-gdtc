@@ -403,9 +403,12 @@ function downloadBytes(filename,bytes,type){
 function exportSeparateClassFiles(){
  const groups=getExportGroups();
  if(!groups.length){alert('Chưa tìm thấy bản ghi đánh giá để xuất.');return}
- const files=groups.map(g=>({name:`GDTC-Lop-${g.name.replace(/[^\\p{L}\\p{N}-]+/gu,'-')}.xlsx`,data:excelBytesMulti([{name:g.name,rows:g.rows}])}));
+ const files=groups.map(g=>{
+  const safeClass=String(g.name).replace(/[^a-zA-Z0-9_-]+/g,'-').replace(/^-+|-+$/g,'')||'Lop';
+  return {name:`GDTC-Lop-${safeClass}.xlsx`,data:excelBytesMulti([{name:g.name,rows:g.rows}])};
+ });
  downloadBytes('GDTC-Tung-lop.zip',zipStore(files),'application/zip');
- alert('Đã đóng gói ${groups.length} file Excel, mỗi lớp một file, vào GDTC-Tung-lop.zip.');
+ alert('Đã đóng gói '+groups.length+' file Excel, mỗi lớp một file, vào GDTC-Tung-lop.zip.');
 }
 function getExportGroups(){
  const es=recordEntries().filter(x=>!!x.level||((x.tags||[]).length>0)||!!x.note);
