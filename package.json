@@ -3,6 +3,6 @@
   "private": true,
   "version": "0.0.0-handover",
   "scripts": {
-    "test": "node tests/source-contract.test.mjs"
+    "test": "node tests/source-contract.test.mjs && node tests/safe-assessment.test.mjs"
   }
 }
