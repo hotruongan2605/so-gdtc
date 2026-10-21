@@ -38,7 +38,7 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--card);bor
  .student{grid-template-columns:minmax(0,1fr) auto;padding:9px 12px}.lv{width:48px;height:46px}
  nav{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);width:min(720px,calc(100vw - 32px));max-width:720px;margin:0;border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.14);overflow:hidden;z-index:100}
  .desktop-only{display:block}.grid2{gap:10px}.grid3{gap:10px}.card{padding:14px}
- #pageClasses,#pageReport,#pageData{max-width:1080px;margin:auto}
+#pageClasses,#pageReport,#pageData,#pageLog{max-width:1080px;margin:auto}
  #pageReport .card:nth-of-type(2){max-height:60vh;overflow:auto}
 }
 @media (max-width: 899px){
@@ -52,11 +52,12 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--card);bor
  .headrow h1{font-size:16px}.iconbtn{height:42px;min-width:42px}.toolbar{top:57px}.student{grid-template-columns:minmax(0,1fr) auto}.name{font-size:15px}.subline{font-size:11px}.lv{width:41px;height:44px}.filter button{min-height:40px}.progress-head{font-size:13px}
 }
 @media (prefers-reduced-motion: reduce){.progress-bar{transition:none}}
+.confirm-panel{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.52);display:none;align-items:end;justify-content:center;padding:12px}.confirm-panel.on{display:flex}.confirm-box{width:min(640px,100%);background:var(--card);border-radius:18px;padding:16px;box-shadow:0 12px 32px rgba(0,0,0,.28)}.confirm-box h2{font-size:18px;margin:0 0 8px}.confirm-box p{margin:0 0 12px;white-space:pre-line}.confirm-actions{display:flex;flex-wrap:wrap;gap:8px}.confirm-actions .btn{flex:1;min-width:140px}.log-row{border-bottom:1px solid var(--line);padding:10px 0}.log-row:last-child{border-bottom:0}.log-meta{font-size:12px;color:var(--muted)}
 
 </style>
 </head>
 <body>
-<header><div class="headrow"><h1>🏃 Sổ GDTC · V2.3</h1><button class="iconbtn" id="backupBtn" title="Sao lưu">💾</button><button class="iconbtn" id="themeBtn" title="Giao diện">🌓</button><span id="saveStatus" class="small" style="opacity:.9;white-space:nowrap">Đã lưu</span></div></header>
+<header><div class="headrow"><h1>🏃 Sổ GDTC · <span id="versionLabel">V2.4</span></h1><button class="iconbtn" id="undoBtn" title="Hoàn tác thao tác đánh giá gần nhất" disabled>↶</button><button class="iconbtn" id="backupBtn" title="Sao lưu">💾</button><button class="iconbtn" id="themeBtn" title="Giao diện">🌓</button><span id="saveStatus" class="small" style="opacity:.9;white-space:nowrap">Đã lưu</span></div></header>
 <main>
 <section id="pageQuick" class="page on">
  <div class="toolbar">
@@ -98,9 +99,11 @@ nav{position:fixed;bottom:0;left:0;right:0;z-index:40;background:var(--card);bor
  <div class="card" style="overflow:auto"><table id="reportTable" style="width:100%;border-collapse:collapse;font-size:13px"><thead><tr><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Ngày</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Lớp</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">HS</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Tiết</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Nội dung</th><th style="padding:7px;border-bottom:1px solid var(--line)">Mức</th><th style="text-align:left;padding:7px;border-bottom:1px solid var(--line)">Nhận xét</th></tr></thead><tbody></tbody></table></div>
 </section>
 <section id="pageData" class="page"><div class="card"><h2 style="margin:0 0 8px">💾 Dữ liệu</h2><p class="small muted">Dữ liệu đánh giá được lưu trên trình duyệt của thiết bị này. Nên sao lưu định kỳ.</p><div class="grid2"><button class="btn pri" id="backup2">💾 Sao lưu JSON</button><button class="btn" id="exportCurrent">📊 Xuất Excel</button><button class="btn pri" id="exportAll">📚 Xuất tất cả lớp (mỗi lớp 1 sheet)</button><button class="btn" id="exportSeparate">📁 Xuất riêng từng lớp (ZIP)</button><label class="btn">📥 Khôi phục JSON<input id="restore" type="file" accept="application/json,.json" style="display:none"></label></div><button class="btn danger" id="reset" style="width:100%;margin-top:8px">Xóa toàn bộ dữ liệu đánh giá</button></div><div class="card"><b>📱 Dùng trên điện thoại & máy tính</b><p class="small muted">Bản này hoạt động offline và dữ liệu nằm trên từng thiết bị. Hãy sao lưu JSON thường xuyên. Khi triển khai thành website HTTPS, có thể cài như ứng dụng PWA và dùng offline.</p></div><div class="card"><b>14 lớp đang quản lý</b><p class="small muted" id="storageStatus" style="margin:6px 0 0">Dữ liệu đang lưu trên thiết bị này.</p><p class="small muted">5/1–5/6 · 4/1–4/6 · 1/1 · 1/4. Danh sách học sinh được nạp từ nguồn dữ liệu hiện có của dự án.</p></div></section>
+<section id="pageLog" class="page"><div class="card"><h2 style="margin:0 0 8px">🧾 Nhật ký chỉnh sửa</h2><div class="grid2"><label class="small muted">Lớp<select id="logClassSel"></select></label><label class="small muted">Ngày<input id="logDateSel" type="date"></label></div><label class="small muted">Học sinh<select id="logStudentSel"><option value="">Tất cả học sinh</option></select></label><div class="actions" style="margin-top:8px"><button class="btn pri" id="refreshLog">↻ Cập nhật</button><button class="btn" id="exportLog">⇩ Xuất CSV</button></div></div><div class="card"><div class="small muted" id="logSummary"></div><div id="logList"></div></div></section>
 </main>
-<nav><button type="button" class="on" data-page="quick"><span>✏️</span>Ghi nhanh</button><button type="button" data-page="classes"><span>🏫</span>Lớp</button><button type="button" data-page="report"><span>📊</span>Báo cáo</button><button type="button" data-page="data"><span>💾</span>Dữ liệu</button></nav>
+<nav><button type="button" class="on" data-page="quick"><span>✏️</span>Ghi nhanh</button><button type="button" data-page="classes"><span>🏫</span>Lớp</button><button type="button" data-page="report"><span>📊</span>Báo cáo</button><button type="button" data-page="log"><span>🧾</span>Nhật ký</button><button type="button" data-page="data"><span>💾</span>Dữ liệu</button></nav>
 <div id="detail"><div class="sheet"><div id="sheetContent"></div></div></div>
+<div id="confirmPanel" class="confirm-panel" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="confirm-box"><h2 id="confirmTitle">Xác nhận</h2><p id="confirmMessage"></p><div id="confirmActions" class="confirm-actions"></div></div></div>
 <script>
 'use strict';
 // Sổ GDTC V2.3 — sửa thanh điều hướng desktop để các tab Lớp/Báo cáo/Dữ liệu luôn nhận click.
@@ -162,60 +165,53 @@ const LESSONS_BY_GRADE={
 };
 function gradeOfClass(c){return String(c||'').split('/')[0]}
 function topicsForClass(c){return LESSONS_BY_GRADE[gradeOfClass(c)]||[]}
-function selectedLessonText(){
- const topicSel=$('#topicSel'), lessonSel=$('#lessonSel'), contentSel=$('#contentSel');
- const lessonIndex=lessonSel.value, contentIndex=contentSel.value;
- if(lessonIndex==='') return $('#lesson').value.trim();
- const lessonText=lessonSel.options[lessonSel.selectedIndex]?.textContent?.trim()||'';
- const contentText=contentIndex!=='' ? (contentSel.options[contentSel.selectedIndex]?.textContent?.trim()||'') : '';
- return contentText ? `${lessonText} — ${contentText}` : lessonText;
+function selectionFromLesson(lesson,className){
+ const topics=topicsForClass(className||''),current=String(lesson||'');let found={topic:'',lesson:'',content:''};
+ topics.forEach((t,ti)=>t.items.forEach((it,ii)=>it.content.forEach((co,ci)=>{if(current===`${it.name} — ${co}`)found={topic:String(ti),lesson:String(ii),content:String(ci)}})));
+ if(found.lesson==='')topics.forEach((t,ti)=>t.items.forEach((it,ii)=>{if(current===it.name)found={topic:String(ti),lesson:String(ii),content:''}}));
+ return found;
+}
+function lessonFromSelection(sel=state.lessonSelection){
+ if(!sel||sel.topic===''||sel.lesson==='')return '';const t=topicsForClass(state.className)[Number(sel.topic)],it=t?.items?.[Number(sel.lesson)];
+ if(!it)return '';const content=it.content?.[Number(sel?.content)];return content?`${it.name} — ${content}`:it.name;
 }
 function populateLessonSelectors(){
- const topics=topicsForClass(state.className);
- $('#topicSel').innerHTML='<option value="">— Chọn chủ đề —</option>'+topics.map((x,i)=>`<option value="${i}">${esc(x.topic)}</option>`).join('');
- $('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>';
- $('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>';
- const current=state.lesson||'';
- let ti=-1,ii=-1,ci=-1;
- topics.forEach((t,i)=>t.items.forEach((it,j)=>{
-   it.content.forEach((co,k)=>{
-     const full=`${it.name} — ${co}`;
-     if(current===full){ti=i;ii=j;ci=k}
-   });
-   if(current===it.name){ti=i;ii=j}
- }));
- if(ti<0){
-   topics.forEach((t,i)=>t.items.forEach((it,j)=>{if(current===it.name){ti=i;ii=j}}));
- }
- if(ti>=0){
-   $('#topicSel').value=String(ti);
-   $('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>'+topics[ti].items.map((it,j)=>`<option value="${j}">${esc(it.name)}</option>`).join('');
-   if(ii>=0){
-     $('#lessonSel').value=String(ii);
-     $('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>'+topics[ti].items[ii].content.map((co,k)=>`<option value="${k}">${esc(co)}</option>`).join('');
-     if(ci>=0) $('#contentSel').value=String(ci);
-   }
-   $('#lesson').value='';
- } else $('#lesson').value=current;
+ const topics=topicsForClass(state.className),sel=state.lessonSelection||selectionFromLesson(state.lesson,state.className);
+ const validTopic=sel.topic!==''&&topics[Number(sel.topic)]?String(sel.topic):'';
+ const items=validTopic!==''?topics[Number(validTopic)].items:[];
+ const validLesson=sel.lesson!==''&&items[Number(sel.lesson)]?String(sel.lesson):'';
+ const contents=validLesson!==''?items[Number(validLesson)].content:[];
+ const validContent=sel.content!==''&&contents[Number(sel.content)]?String(sel.content):'';
+ $('#topicSel').innerHTML='<option value="">— Chọn chủ đề —</option>'+topics.map((x,i)=>`<option value="${i}">${esc(x.topic)}</option>`).join('');$('#topicSel').value=validTopic;
+ $('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>'+items.map((it,i)=>`<option value="${i}">${esc(it.name)}</option>`).join('');$('#lessonSel').value=validLesson;
+ $('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>'+contents.map((co,i)=>`<option value="${i}">${esc(co)}</option>`).join('');$('#contentSel').value=validContent;
+ $('#lesson').value=validLesson===''?(state.lesson||''):'';
 }
-function setLessonFromSelectors(){
- state.lesson=selectedLessonText();
- save();
+function setLessonSelection(patch){
+ state.lessonSelection={...(state.lessonSelection||selectionFromLesson(state.lesson,state.className)),...patch};state.lesson=lessonFromSelection()||String(patch.manual??'');save();
 }
 
 const LABELS=['Tích cực','Tiến bộ','Kỹ thuật tốt','Thiếu tập trung','Quên trang phục','Không tham gia (ốm/miễn)','Cần hỗ trợ thêm','Năng khiếu','Tuân thủ nội quy','Tập luyện tốt','Tích cực tham gia','Nói chuyện trong giờ','Không thực hiện yêu cầu','Làm ảnh hưởng bạn khác','Chưa chuẩn bị/đúng giờ'];
-const KEY='gdtc_fast_v2';
+const KEY='gdtc_fast_v2', APP_VERSION='2.4.0-safe', RELEASE_DATE='2026-10-21', MAX_LOG=500, UNDO_MS=30000;
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const today=()=>{const d=new Date();const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`};
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d');
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let state=load(); let filter='all'; let activeSid=null;
-function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(!x)return newState();x.version=3;x.customClasses=x.customClasses||{};x.records=x.records||{};return x}catch(e){return newState()}}
-function newState(){return {version:3,date:today(),className:'5/1',period:'',lesson:'',autoNext:true,theme:'auto',records:{},customClasses:{}}}
-function save(){localStorage.setItem(KEY,JSON.stringify(state));const el=$('#saveStatus');if(el){el.textContent='Đã lưu';clearTimeout(save._t);save._t=setTimeout(()=>{if(el)el.textContent='Đang hoạt động'},900)}const st=$('#storageStatus');if(st)st.textContent='Dữ liệu đang lưu trên thiết bị này · '+Object.keys(state.records||{}).length+' bản ghi';}
+function load(){try{const x=JSON.parse(localStorage.getItem(KEY));if(!x)return newState();x.version=4;x.customClasses=x.customClasses||{};x.records=x.records||{};x.changeLog=Array.isArray(x.changeLog)?x.changeLog:[];x.lessonSelection=x.lessonSelection||selectionFromLesson(x.lesson,x.className);x.undoAction=null;return x}catch(e){return newState()}}
+function newState(){return {version:4,date:today(),className:'5/1',period:'',lesson:'',lessonSelection:{topic:'',lesson:'',content:''},autoNext:true,theme:'auto',records:{},customClasses:{},changeLog:[],undoAction:null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));const el=$('#saveStatus');if(el){el.textContent='Đã lưu';clearTimeout(save._t);save._t=setTimeout(()=>{if(el)el.textContent='Đang hoạt động'},900)}const st=$('#storageStatus');if(st)st.textContent='Dữ liệu đang lưu trên thiết bị này · '+Object.keys(state.records||{}).length+' bản ghi';}catch(e){alert('Không thể lưu dữ liệu trên thiết bị. Thao tác chưa được xác nhận là an toàn; hãy sao lưu ngay và kiểm tra dung lượng.');throw e}}
 function key(sid){return [state.date,state.className,state.period||'',state.lesson||'',sid].join('|')}
 function rec(sid){return state.records[key(sid)]||{level:'',tags:[],note:''}}
 function setRec(sid,patch){const k=key(sid),r={...rec(sid),studentName:students()[Number(sid)]||rec(sid).studentName||'',...patch};if(!r.level&&!r.tags.length&&!r.note)delete state.records[k];else state.records[k]=r;save()}
+function showConfirm({title='Xác nhận',message,actions}){const panel=$('#confirmPanel');$('#confirmTitle').textContent=title;$('#confirmMessage').textContent=message;$('#confirmActions').innerHTML='';actions.forEach(a=>{const b=document.createElement('button');b.className=`btn ${a.primary?'pri':a.danger?'danger':''}`;b.textContent=a.label;b.addEventListener('click',()=>{panel.classList.remove('on');if(a.run)a.run()},{once:true});$('#confirmActions').appendChild(b)});panel.classList.add('on')}
+function appendLog(entry){state.changeLog.unshift(entry);if(state.changeLog.length>MAX_LOG)state.changeLog.length=MAX_LOG}
+function contextSignature(){return [state.date,state.className,state.period||'',state.lesson||''].join('|')}
+function planChanges(changes){return {context:contextSignature(),entries:changes.map(x=>{const recordKey=x.key||key(x.sid),old=state.records[recordKey]||{tags:[],note:''};return {key:recordKey,sid:String(x.sid),before:old.level||'',after:x.next||'',studentName:x.studentName||students()[Number(x.sid)]||old.studentName||'',date:x.date||state.date,className:x.className||state.className,period:(x.period??state.period)||'',lesson:(x.lesson??state.lesson)||''}}).filter(x=>x.before!==x.after)}}
+function applyPlan(plan,operation,{createUndo=true}={}){if(!plan.entries.length)return;if(plan.context!==contextSignature()){alert('Ngữ cảnh lớp, ngày, tiết hoặc bài học đã thay đổi. Vui lòng thao tác lại.');return false}if(plan.entries.some(x=>(state.records[x.key]?.level||'')!==x.before)){alert('Một hoặc nhiều đánh giá đã thay đổi. Vui lòng thao tác lại.');return false}const beforeState=JSON.parse(JSON.stringify(state)),time=new Date().toISOString();try{plan.entries.forEach((x,i)=>{const old=state.records[x.key]||{tags:[],note:''},updated={...old,studentName:x.studentName,level:x.after};if(!updated.level&&!updated.tags?.length&&!updated.note)delete state.records[x.key];else state.records[x.key]=updated;appendLog({id:`${time}|${x.key}|${i}`,recordId:x.key,studentName:x.studentName,className:x.className,date:x.date,period:x.period,lesson:x.lesson,at:time,before:x.before,after:x.after,operation})});state.undoAction=createUndo?{at:Date.now(),context:plan.context,entries:plan.entries.map(x=>({...x}))}:null;save()}catch(e){state=beforeState;render();updateUndoButton();alert('Không thể lưu thay đổi; dữ liệu đã được khôi phục về trạng thái trước thao tác.');return false}render();updateUndoButton();if(state.autoNext&&plan.entries.length===1&&!plan.entries[0].before&&plan.entries[0].after)focusNext(plan.entries[0].sid);return true}
+function requestChange(sid,level){const old=rec(sid).level||'',name=students()[Number(sid)]||'Học sinh',plan=planChanges([{sid,next:level}]);if(!old){applyPlan(plan,'Chấm mới');return}if(old===level)return;showConfirm({title:'Xác nhận đổi đánh giá',message:`Bạn có chắc muốn đổi đánh giá của ${name} (lớp ${state.className}) từ ${old} sang ${level} không?`,actions:[{label:'Hủy'},{label:'Xác nhận thay đổi',primary:true,run:()=>applyPlan(plan,'Đổi mức đánh giá')}]})}
+function requestClear(sid){const old=rec(sid).level||'',name=students()[Number(sid)]||'Học sinh';if(!old)return;const plan=planChanges([{sid,next:''}]);showConfirm({title:'Xóa đánh giá',message:`Bạn có chắc muốn xóa đánh giá ${old} của ${name} (lớp ${state.className}) không?`,actions:[{label:'Hủy'},{label:'Xóa đánh giá',danger:true,run:()=>applyPlan(plan,'Xóa đánh giá')}]})}
+function updateUndoButton(){const b=$('#undoBtn');if(!b)return;const a=state.undoAction;const ok=!!a&&Date.now()-a.at<=UNDO_MS;b.disabled=!ok;b.title=ok?'Hoàn tác thao tác đánh giá gần nhất (30 giây)':'Không có thao tác có thể hoàn tác'}
 function classNames(){return [...CLASSES,...Object.keys(state.customClasses||{}).filter(c=>!CLASSES.includes(c))]}
 function students(){return state.customClasses?.[state.className]?.students||PRELOAD[state.className]||[]}
 function isCustomClass(c){return !!state.customClasses?.[c]}
@@ -230,36 +226,18 @@ function render(){
 function rowHTML(x){const r=rec(x.sid),lv=r.level||'';return `<div class="student ${lv}" id="stu-${x.sid}"><div class="who" data-detail="${x.sid}"><div class="name">${x.i+1}. ${esc(x.name)}</div><div class="subline">${r.tags.length?esc(r.tags.slice(0,2).join(' · '))+(r.tags.length>2?' …':''):(r.note?'📝 Có ghi chú':'')}</div></div><div class="levels">${['T','H','C'].map(k=>`<button class="lv ${k} ${lv===k?'on':''}" data-level="${k}" data-sid="${x.sid}">${k}</button>`).join('')}</div></div>`}
 function updateStats(){const ss=students(),rs=ss.map((_,i)=>rec(String(i)).level).filter(Boolean);const total=ss.length,rated=rs.length,pct=total?Math.round(rated/total*100):0;$('#nRated').textContent=rated;$('#nT').textContent=rs.filter(x=>x==='T').length;$('#nH').textContent=rs.filter(x=>x==='H').length;$('#nC').textContent=rs.filter(x=>x==='C').length;$('#progressText').textContent=`${rated}/${total} · ${pct}%`;$('#progressRemaining').textContent=`${Math.max(0,total-rated)} học sinh chưa chấm`;$(' #progressRatedLabel'.trim()).textContent=`${rated} đã chấm`;$('#progressBar').style.width=pct+'%'}
 function renderClasses(){$('#classCards').innerHTML=classNames().map(c=>{const n=studentsForClass(c).length;return `<button type="button" class="btn" style="width:100%;margin:4px 0;text-align:left" data-class="${esc(c)}">🏫 Lớp ${esc(c)} <span class="muted">· ${n} HS</span></button>`}).join('')}
-function rate(sid,level){const old=rec(sid).level;setRec(sid,{level:old===level?'':level});render();if(state.autoNext&&old!==level)focusNext(sid)}
+function rate(sid,level){requestChange(sid,level)}
 function focusNext(sid){const idx=Number(sid),ss=students();for(let j=idx+1;j<ss.length;j++){if(!rec(String(j)).level){setTimeout(()=>document.getElementById('stu-'+j)?.scrollIntoView({behavior:'smooth',block:'center'}),30);return}}for(let j=0;j<idx;j++){if(!rec(String(j)).level){setTimeout(()=>document.getElementById('stu-'+j)?.scrollIntoView({behavior:'smooth',block:'center'}),30);return}}}
-function allLevel(level){students().forEach((_,i)=>setRec(String(i),{level}));render()}
+function allLevel(level){const rows=students().map((_,i)=>({sid:String(i),old:rec(String(i)).level||''})),empty=rows.filter(x=>!x.old),same=rows.filter(x=>x.old===level),different=rows.filter(x=>x.old&&x.old!==level);const makePlan=includeDifferent=>planChanges(rows.filter(x=>!x.old||(includeDifferent&&x.old!==level)).map(x=>({sid:x.sid,next:level})));if(!different.length){applyPlan(makePlan(false),'Chấm hàng loạt');return}const safePlan=makePlan(false),overwritePlan=makePlan(true);showConfirm({title:`Chấm cả lớp ${level}`,message:`Tổng số học sinh: ${rows.length}\nChưa đánh giá: ${empty.length}\nĐã có mức ${level}: ${same.length}\nCó mức khác và có thể bị thay đổi: ${different.length}`,actions:[{label:'Hủy'},{label:'Chỉ chấm chưa đánh giá',primary:true,run:()=>applyPlan(safePlan,'Chấm hàng loạt')},{label:'Ghi đè mức khác',danger:true,run:()=>showConfirm({title:'Xác nhận ghi đè',message:`Sẽ đổi ${different.length} đánh giá hiện có sang ${level}. Bạn có chắc chắn?`,actions:[{label:'Hủy'},{label:'Xác nhận ghi đè',danger:true,run:()=>applyPlan(overwritePlan,'Chấm hàng loạt')}]})}]})}
 function clearAll(){
  const period=state.period||'';
  const scope=`ngày ${state.date}, lớp ${state.className}, tiết ${period||'—'}`;
- if(!confirm(`Bỏ chấm T/H/C của ${scope}?\n\nTất cả mức T/H/C của tiết này sẽ được bỏ, dù trước đó đã chọn nội dung nào. Nhận xét nhanh và nhận xét khác vẫn được giữ nguyên.`)) return;
- let changed=0;
- const records=state.records||{};
- for(const [k,r] of Object.entries(records)){
-   if(!r || !r.level) continue;
-   const parts=String(k).split('|');
-   // Khóa chuẩn: ngày | lớp | tiết | nội dung | STT.
-   // Không dùng nội dung để xác định bản ghi, vì nội dung có thể thay đổi
-   // hoặc chứa ký tự | ở các phiên bản cũ.
-   const sameDate=parts[0]===String(state.date);
-   const sameClass=parts[1]===String(state.className);
-   const samePeriod=parts[2]===period;
-   if(!sameDate || !sameClass || !samePeriod) continue;
-   r.level='';
-   changed++;
-   if(!(Array.isArray(r.tags)&&r.tags.length) && !r.note) delete records[k];
- }
- state.records=records;
- save();
- render();
- alert(changed?`Đã bỏ chấm ${changed} lượt T/H/C của ${scope}. Nhận xét vẫn được giữ nguyên.`:'Không tìm thấy mức T/H/C nào của tiết này để bỏ chấm.');
+ const matches=[];for(const [k,r] of Object.entries(state.records||{})){const p=String(k).split('|');if(r?.level&&p[0]===String(state.date)&&p[1]===String(state.className)&&p[2]===period)matches.push({sid:p[p.length-1],key:k,studentName:r.studentName||'',date:p[0],className:p[1],period:p[2],lesson:p.slice(3,-1).join('|')})}
+ if(!matches.length){alert('Không tìm thấy mức T/H/C nào của tiết này để bỏ chấm.');return}
+ const plan=planChanges(matches.map(x=>({...x,next:''})));showConfirm({title:'Xác nhận bỏ chấm hàng loạt',message:`Sẽ bỏ ${matches.length} mức T/H/C của ${scope}. Nhận xét vẫn được giữ nguyên.`,actions:[{label:'Hủy'},{label:'Bỏ chấm',danger:true,run:()=>applyPlan(plan,'Xóa đánh giá hàng loạt')}]})
 }
 
-function openDetail(sid){activeSid=sid;const r=rec(sid),name=students()[Number(sid)];$('#sheetContent').innerHTML=`<div class="sheethead"><div><b>${esc(name)}</b><div class="small muted">Lớp ${esc(state.className)} · ${esc(state.date)}${state.period?' · Tiết '+esc(state.period):''}</div></div><button class="btn" id="closeSheet">Đóng</button></div><div class="grid3" style="margin-top:10px">${['T','H','C'].map(k=>`<button class="lv ${k} ${r.level===k?'on':''}" style="width:auto" data-sheet-level="${k}">${k}</button>`).join('')}</div><div class="comment-title">Nhận xét nhanh</div><div class="comment-help">Chạm vào từng nhận xét để chọn/bỏ chọn.</div><div class="chips">${LABELS.map(t=>`<button class="chip ${r.tags.includes(t)?'on':''}" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div><textarea id="note" rows="3" placeholder="Nhận xét khác…">${esc(r.note)}</textarea><div class="actions" style="margin-top:8px"><button class="btn pri" id="saveDetail">Lưu</button><button class="btn" id="clearLevelDetail">↺ Bỏ chấm</button><button class="btn danger" id="clearDetail">Xóa nhận xét</button></div>`;$('#detail').style.display='block'}
+function openDetail(sid){activeSid=sid;const r=rec(sid),name=students()[Number(sid)];$('#sheetContent').innerHTML=`<div class="sheethead"><div><b>${esc(name)}</b><div class="small muted">Lớp ${esc(state.className)} · ${esc(state.date)}${state.period?' · Tiết '+esc(state.period):''}</div></div><button class="btn" id="closeSheet">Đóng</button></div><div class="grid3" style="margin-top:10px">${['T','H','C'].map(k=>`<button class="lv ${k} ${r.level===k?'on':''}" style="width:auto" data-sheet-level="${k}">${k}</button>`).join('')}</div><div class="comment-title">Nhận xét nhanh</div><div class="comment-help">Chạm vào từng nhận xét để chọn/bỏ chọn.</div><div class="chips">${LABELS.map(t=>`<button class="chip ${r.tags.includes(t)?'on':''}" data-tag="${esc(t)}">${esc(t)}</button>`).join('')}</div><textarea id="note" rows="3" placeholder="Nhận xét khác…">${esc(r.note)}</textarea><div class="actions" style="margin-top:8px"><button class="btn pri" id="saveDetail">Lưu</button><button class="btn" id="clearLevelDetail">Xóa đánh giá</button><button class="btn danger" id="clearDetail">Xóa nhận xét</button></div>`;$('#detail').style.display='block'}
 function closeDetail(){activeSid=null;$('#detail').style.display='none'}
 function backup(){const data=JSON.stringify({app:'Sổ GDTC – Ghi nhanh',version:3,exportedAt:new Date().toISOString(),state});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download='sao-luu-GDTC-'+state.date+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
 function applyTheme(){document.documentElement.dataset.theme=state.theme;if(state.theme==='dark'){document.documentElement.style.setProperty('--bg','#0e1317');document.documentElement.style.setProperty('--card','#19212a');document.documentElement.style.setProperty('--ink','#eef2f5');document.documentElement.style.setProperty('--muted','#9aa7b3');document.documentElement.style.setProperty('--line','#2c3742')}else{for(const v of ['--bg','--card','--ink','--muted','--line'])document.documentElement.style.removeProperty(v)}}
@@ -430,13 +408,19 @@ function renderReport(){const names=classNames();$('#reportClassSel').innerHTML=
 function populateReportStudents(){const c=$('#reportClassSel').value;const ss=c?studentsForClass(c):[];$('#reportStudentSel').innerHTML='<option value="">Tất cả học sinh</option>'+ss.map((n,i)=>`<option value="${i}">${i+1}. ${esc(n)}</option>`).join('')}
 function buildReportTable(){const from=$('#reportFrom').value,to=$('#reportTo').value,c=$('#reportClassSel').value,sid=$('#reportStudentSel').value;let es=recordEntries().filter(x=>(!from||x.date>=from)&&(!to||x.date<=to)&&(!c||x.className===c)&&(!sid||x.sid===sid)&&!!x.level);es.sort((a,b)=>a.date.localeCompare(b.date)||a.className.localeCompare(b.className)||Number(a.sid)-Number(b.sid));let t=es.reduce((a,x)=>(a[x.level]=(a[x.level]||0)+1,a),{});$('#rRated').textContent=es.length;$('#rT').textContent=t.T||0;$('#rH').textContent=t.H||0;$('#rC').textContent=t.C||0;$('#reportSummary').textContent=es.length?`Có ${es.length} lượt đánh giá trong khoảng ${from||'…'} đến ${to||'…'}${c?' · lớp '+c:''}.`:'Chưa có dữ liệu trong khoảng thời gian đã chọn.';$('#reportTable tbody').innerHTML=es.map(x=>`<tr><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.date)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.className)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.studentName)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.period)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc(x.lesson)}</td><td style="padding:7px;text-align:center;border-bottom:1px solid var(--line);font-weight:800">${esc(x.level)}</td><td style="padding:7px;border-bottom:1px solid var(--line)">${esc([...x.tags,x.note].filter(Boolean).join(' · '))}</td></tr>`).join('')||'<tr><td colspan="7" class="empty">Không có dữ liệu.</td></tr>';return es}
 function exportReport(){const es=buildReportTable();const rows=[['Ngày','Lớp','Tiết','Nội dung','STT','Học sinh','Mức','Nhận xét']];es.forEach(x=>rows.push([x.date,x.className,x.period,x.lesson,Number(x.sid)+1,x.studentName,x.level,[...x.tags,x.note].filter(Boolean).join(' · ')]));downloadExcel(`Bao-cao-GDTC-${$('#reportClassSel').value||'tat-ca'}-${$('#reportFrom').value}-${$('#reportTo').value}.xlsx`,rows,'Báo cáo')}
+function logEntries(){const c=$('#logClassSel').value,d=$('#logDateSel').value,s=$('#logStudentSel').value;return (state.changeLog||[]).filter(x=>(!c||x.className===c)&&(!d||x.date===d)&&(!s||x.studentName===s))}
+function renderLog(){const names=classNames(),current=$('#logClassSel').value||'';$('#logClassSel').innerHTML='<option value="">Tất cả lớp</option>'+names.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');$('#logClassSel').value=current;const studentsForLog=current?studentsForClass(current):[...new Set((state.changeLog||[]).map(x=>x.studentName).filter(Boolean))];const selected=$('#logStudentSel').value||'';$('#logStudentSel').innerHTML='<option value="">Tất cả học sinh</option>'+studentsForLog.map(n=>`<option value="${esc(n)}">${esc(n)}</option>`).join('');$('#logStudentSel').value=selected;const es=logEntries();$('#logSummary').textContent=es.length?`${es.length} thay đổi, mới nhất trước.`:'Chưa có thay đổi phù hợp.';$('#logList').innerHTML=es.map(x=>`<div class="log-row"><b>${esc(x.studentName||'Học sinh')}</b> · ${esc(x.before||'Chưa chấm')} → ${esc(x.after||'Đã xóa')}<div class="log-meta">${esc(x.operation)} · Lớp ${esc(x.className)} · ${esc(x.date)}${x.period?' · Tiết '+esc(x.period):''}${x.lesson?' · '+esc(x.lesson):''}<br>${new Date(x.at).toLocaleString('vi-VN')}</div></div>`).join('')}
+function exportLog(){const rows=[['Thời điểm','Lớp','Ngày','Tiết','Nội dung','Học sinh','Trước','Sau','Thao tác','Mã bản ghi'],...logEntries().map(x=>[x.at,x.className,x.date,x.period,x.lesson,x.studentName,x.before,x.after,x.operation,x.recordId])];const csv='\ufeff'+rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=`Nhat-ky-GDTC-${today()}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function undoLast(){const a=state.undoAction;if(!a||Date.now()-a.at>UNDO_MS){state.undoAction=null;updateUndoButton();return}if(a.context!==contextSignature()){alert('Hoàn tác chỉ khả dụng trong đúng lớp, ngày, tiết và nội dung vừa thao tác.');return}const plan={context:a.context,entries:a.entries.map(e=>({...e,before:e.after,after:e.before}))};applyPlan(plan,'Hoàn tác',{createUndo:false})}
+function checkUpdate(){if(!('serviceWorker' in navigator)){alert(`Phiên bản ${APP_VERSION} · không có Service Worker trong ngữ cảnh này.`);return}navigator.serviceWorker.getRegistration().then(r=>r?.update()).then(()=>alert(`Đã kiểm tra cập nhật. Phiên bản đang chạy: ${APP_VERSION}. Nếu có bản mới, hãy đóng và mở lại ứng dụng sau khi tải xong.`)).catch(()=>alert('Không thể kiểm tra cập nhật lúc này.'))}
 function showPage(page){
- const valid=['quick','classes','report','data'];
+ const valid=['quick','classes','report','log','data'];
  const p=valid.includes(page)?page:'quick';
  $$('.page').forEach(x=>x.classList.toggle('on',x.id==='page'+p.charAt(0).toUpperCase()+p.slice(1)));
  $$('nav [data-page]').forEach(x=>x.classList.toggle('on',x.dataset.page===p));
  if(p==='classes')renderClassManager();
  if(p==='report'){renderReport();buildReportTable()}
+ if(p==='log')renderLog();
  window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -448,17 +432,17 @@ document.addEventListener('click',e=>{
  const page=e.target.closest('[data-page]');if(page){showPage(page.dataset.page);return}
  if(e.target.id==='allH')allLevel('H');if(e.target.id==='allT')allLevel('T');if(e.target.id==='allC')allLevel('C');if(e.target.id==='clearAll')clearAll();if(e.target.id==='backupBtn'||e.target.id==='backup2')backup();if(e.target.id==='exportCurrent')exportCurrent();if(e.target.id==='exportAll')exportAllRecords();if(e.target.id==='exportSeparate')exportSeparateClassFiles();if(e.target.id==='themeBtn'){state.theme=state.theme==='dark'?'light':'dark';save();applyTheme()}
  if(e.target.id==='closeSheet'||e.target.closest('#closeSheet'))closeDetail();
- const sl=e.target.closest('[data-sheet-level]');if(sl){const old=rec(activeSid).level;setRec(activeSid,{level:old===sl.dataset.sheetLevel?'':sl.dataset.sheetLevel});openDetail(activeSid);render()}
+ const sl=e.target.closest('[data-sheet-level]');if(sl){requestChange(activeSid,sl.dataset.sheetLevel)}
  const tg=e.target.closest('[data-tag]');if(tg){const r=rec(activeSid);const t=tg.dataset.tag;const tags=r.tags.includes(t)?r.tags.filter(x=>x!==t):[...r.tags,t];setRec(activeSid,{tags});openDetail(activeSid)}
  if(e.target.id==='saveDetail'){const r=rec(activeSid);setRec(activeSid,{note:$('#note').value.trim()});closeDetail();render()}
- if(e.target.id==='clearLevelDetail'){setRec(activeSid,{level:''});openDetail(activeSid);render()}
+ if(e.target.id==='clearLevelDetail'){requestClear(activeSid)}
  if(e.target.id==='clearDetail'){setRec(activeSid,{tags:[],note:''});closeDetail();render()}
  if(e.target.id==='reset'){if(confirm('Xóa toàn bộ dữ liệu đánh giá? Danh sách lớp tùy chỉnh sẽ được giữ lại.\n\nApp sẽ tải một bản sao lưu JSON trước khi xóa để tránh mất dữ liệu.')){backup();state.records={};state.date=today();state.period='';state.lesson='';save();render();alert('Đã xóa dữ liệu đánh giá.')}}
- if(e.target.id==='addClass')addClass();if(e.target.id==='clearClassForm'){$('#newClassName').value='';$('#newClassStudents').value=''}if(e.target.id==='saveRoster')saveRoster();if(e.target.id==='deleteCustomClass')deleteCustomClass();if(e.target.id==='refreshReport')buildReportTable();if(e.target.id==='exportReport')exportReport();
+ if(e.target.id==='undoBtn')undoLast();if(e.target.id==='checkUpdate')checkUpdate();if(e.target.id==='addClass')addClass();if(e.target.id==='clearClassForm'){$('#newClassName').value='';$('#newClassStudents').value=''}if(e.target.id==='saveRoster')saveRoster();if(e.target.id==='deleteCustomClass')deleteCustomClass();if(e.target.id==='refreshReport')buildReportTable();if(e.target.id==='exportReport')exportReport();if(e.target.id==='refreshLog')renderLog();if(e.target.id==='exportLog')exportLog();
 });
-$('#classSel').addEventListener('change',e=>{state.className=e.target.value;state.lesson='';save();render()});$('#dateSel').addEventListener('change',e=>{state.date=e.target.value||today();save();render()});$('#periodSel').addEventListener('change',e=>{state.period=e.target.value;save();render()});$('#topicSel').addEventListener('change',e=>{const topics=topicsForClass(state.className),ti=Number(e.target.value);$('#lessonSel').innerHTML='<option value="">— Chọn bài —</option>'+(Number.isFinite(ti)&&topics[ti]?topics[ti].items.map((it,j)=>`<option value="${j}">${esc(it.name)}</option>`).join(''):'');$('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>';state.lesson='';$('#lesson').value='';save()});$('#lessonSel').addEventListener('change',e=>{const topics=topicsForClass(state.className),ti=Number($('#topicSel').value),ii=Number(e.target.value),it=topics[ti]?.items[ii];$('#contentSel').innerHTML='<option value="">— Chọn nội dung —</option>'+(it?it.content.map((co,k)=>`<option value="${k}">${esc(co)}</option>`).join(''):'');state.lesson=it?it.name:'';$('#lesson').value='';save()});$('#contentSel').addEventListener('change',e=>{setLessonFromSelectors()});$('#lesson').addEventListener('input',e=>{state.lesson=e.target.value;save()});$('#search').addEventListener('input',render);$('#autoNext').addEventListener('change',e=>{state.autoNext=e.target.checked;save()});$('#restore').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.state)throw 0;if(confirm('Khôi phục sẽ ghi đè dữ liệu đánh giá hiện tại. Tiếp tục?')){state=o.state;state.customClasses=state.customClasses||{};state.version=3;save();render();alert('Đã khôi phục dữ liệu.')}}catch(_){alert('File sao lưu không hợp lệ.')}};rd.readAsText(f);e.target.value='' });
+$('#classSel').addEventListener('change',e=>{state.className=e.target.value;state.lesson='';state.lessonSelection={topic:'',lesson:'',content:''};save();render()});$('#dateSel').addEventListener('change',e=>{state.date=e.target.value||today();save();render()});$('#periodSel').addEventListener('change',e=>{state.period=e.target.value;save();render()});$('#topicSel').addEventListener('change',e=>{setLessonSelection({topic:e.target.value,lesson:'',content:'',manual:''});render()});$('#lessonSel').addEventListener('change',e=>{setLessonSelection({lesson:e.target.value,content:'',manual:''});render()});$('#contentSel').addEventListener('change',e=>{setLessonSelection({content:e.target.value,manual:''});render()});$('#lesson').addEventListener('input',e=>{state.lesson=e.target.value;state.lessonSelection={topic:'',lesson:'',content:''};save()});$('#search').addEventListener('input',render);$('#autoNext').addEventListener('change',e=>{state.autoNext=e.target.checked;save()});$('#restore').addEventListener('change',e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o.state)throw 0;if(confirm('Khôi phục sẽ ghi đè dữ liệu đánh giá hiện tại. Tiếp tục?')){state=o.state;state.customClasses=state.customClasses||{};state.records=state.records||{};state.changeLog=Array.isArray(state.changeLog)?state.changeLog:[];state.lessonSelection=state.lessonSelection||selectionFromLesson(state.lesson,state.className);state.version=4;save();render();alert('Đã khôi phục dữ liệu.')}}catch(_){alert('File sao lưu không hợp lệ.')}};rd.readAsText(f);e.target.value='' });$('#logClassSel').addEventListener('change',renderLog);$('#logDateSel').addEventListener('change',renderLog);$('#logStudentSel').addEventListener('change',renderLog);
 $('#manageClassSel').addEventListener('change',()=>{const c=$('#manageClassSel').value;state.className=c;save();loadManagedRoster()});$('#reportClassSel').addEventListener('change',()=>{populateReportStudents();buildReportTable()});$('#reportFrom').addEventListener('change',buildReportTable);$('#reportTo').addEventListener('change',buildReportTable);$('#reportStudentSel').addEventListener('change',buildReportTable);
-applyTheme();render();showPage('quick');
+applyTheme();render();updateUndoButton();setInterval(updateUndoButton,1000);showPage('quick');
 if('serviceWorker' in navigator && location.protocol==='https:'){navigator.serviceWorker.register('./sw.js').catch(()=>{});}
 </script>
 </body></html>

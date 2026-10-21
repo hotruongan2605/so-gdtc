@@ -1,0 +1,11 @@
+# Dữ liệu vận hành và xuất tệp có thể chứa dữ liệu học sinh
+*.json
+!package.json
+*.xlsx
+*.xls
+*.zip
+
+# Công cụ cục bộ
+node_modules/
+playwright-report/
+test-results/
