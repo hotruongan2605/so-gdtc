@@ -34,3 +34,10 @@ Những mục trên là **có trong mã nguồn**, chưa phải toàn bộ đã 
 - Giữ cấu trúc GitHub Pages và PWA hiện có, không thay framework.
 - Bổ sung tài liệu + test hợp đồng nguồn không có phụ thuộc, không đụng dữ liệu đã lưu.
 - Chưa sửa logic đánh giá: cần tái hiện và có acceptance criteria trước khi thay đổi.
+
+## Cập nhật an toàn đánh giá — 2026-10-21
+
+- `lessonSelection` lưu riêng chủ đề/bài/nội dung. Đây là sửa gốc cho lỗi chọn chủ đề làm mất `state.lesson` trước khi chấm hàng loạt và render lại.
+- Chấm mới vẫn ghi ngay. Đổi mức đã có, xóa mức và ghi đè hàng loạt phải qua hộp xác nhận riêng; chạm lại cùng mức không làm xóa kết quả.
+- `changeLog` được lưu cùng state, giới hạn 500 mục để bảo vệ dung lượng; backup JSON tự mang theo lịch sử. Bản backup cũ không có lịch sử vẫn đọc được.
+- Hoàn tác chỉ hoạt động trong 30 giây, đúng ngữ cảnh lớp/ngày/tiết/nội dung và chỉ khi chưa có thay đổi mới hơn.

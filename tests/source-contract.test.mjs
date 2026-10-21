@@ -25,7 +25,8 @@ test('assessment records retain their required context and values', async () => 
 
 test('destructive and transfer flows keep their safeguards', async () => {
   const html = await read('index.html');
-  assert.match(html, /if\(!confirm\(`Bỏ chấm T\/H\/C/);
+  assert.match(html, /Xác nhận bỏ chấm hàng loạt/);
+  assert.match(html, /function showConfirm/);
   assert.match(html, /if\(confirm\('Xóa toàn bộ dữ liệu đánh giá/);
   assert.match(html, /if\(confirm\('Khôi phục sẽ ghi đè dữ liệu đánh giá hiện tại/);
   assert.match(html, /function exportSeparateClassFiles\(\)/);
