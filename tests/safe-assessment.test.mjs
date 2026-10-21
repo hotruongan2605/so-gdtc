@@ -25,5 +25,22 @@ test('ghi nhật ký, hoàn tác và giữ tương thích backup cũ', () => {
   assert.match(html, /function appendLog/);
   assert.match(html, /function undoLast/);
   assert.match(html, /UNDO_MS=30000/);
-  assert.match(html, /state\.lessonSelection=state\.lessonSelection\|\|selectionFromLesson\(state\.lesson\)/);
+  assert.match(html, /state\.lessonSelection=state\.lessonSelection\|\|selectionFromLesson\(state\.lesson,state\.className\)/);
+});
+
+test('kế hoạch thao tác chụp đúng record key và từ chối ngữ cảnh thay đổi', () => {
+  assert.match(html, /function planChanges\(changes\)/);
+  assert.match(html, /const recordKey=x\.key\|\|key\(x\.sid\)/);
+  assert.match(html, /if\(plan\.context!==contextSignature\(\)\)/);
+  assert.match(html, /state\.records\[x\.key\]/);
+  assert.match(html, /state=beforeState;render\(\);updateUndoButton\(\)/);
+  assert.match(html, /createUndo=true/);
+  assert.match(html, /applyPlan\(plan,'Hoàn tác',\{createUndo:false\}\)/);
+});
+
+test('lựa chọn rỗng không được diễn giải thành mục số 0', () => {
+  assert.match(html, /if\(!sel\|\|sel\.topic===''\|\|sel\.lesson===''\)return ''/);
+  assert.match(html, /sel\.topic!==''&&topics\[Number\(sel\.topic\)\]/);
+  assert.match(html, /sel\.lesson!==''&&items\[Number\(sel\.lesson\)\]/);
+  assert.match(html, /sel\.content!==''&&contents\[Number\(sel\.content\)\]/);
 });
